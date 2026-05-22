@@ -442,6 +442,16 @@
             </div>
             
             <nav class="px-4 pb-6">
+                <!-- 首页导航 -->
+                <div class="mb-6">
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('首页功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>首页</span>
+                    </div>
+                </div>
+                
                 <!-- 账户明细分组 -->
                 <div class="mb-2 px-4 text-xs text-gray-500 uppercase tracking-wider">账户明细</div>
                 <div class="space-y-1">
@@ -457,6 +467,18 @@
                         </svg>
                         <span>余额明细</span>
                     </div>
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('权益金明细功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>权益金明细</span>
+                    </div>
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('授信单明细功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>授信单明细</span>
+                    </div>
                 </div>
             </nav>
         </aside>
@@ -466,8 +488,36 @@
             <!-- 顶部导航栏 -->
             <header class="bg-white shadow-sm sticky top-0 z-50">
                 <div class="flex items-center justify-between px-6 py-4">
-                    <!-- 空占位，保持布局 -->
-                    <div></div>
+                    <!-- 面包屑 -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-500">首页</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        <span id="breadcrumb-text" class="text-gray-900 font-medium">积分明细</span>
+                    </div>
+                    
+                    <!-- 用户头像下拉 -->
+                    <div class="dropdown relative">
+                        <div class="flex items-center gap-3 cursor-pointer">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                                张
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="text-sm font-medium text-gray-900">张三</div>
+                                <div class="text-xs text-gray-500">超级管理员</div>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="dropdown-menu mt-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showToast('个人中心功能开发中')">个人中心</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showToast('账户设置功能开发中')">账户设置</a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50" onclick="showToast('已退出登录')">退出登录</a>
+                        </div>
+                    </div>
                 </div>
             </header>
 
@@ -478,6 +528,7 @@
                     <!-- 页签导航 -->
                     <div class="bg-white rounded-t-lg border-b">
                         <div class="flex">
+                            <div class="tab-item" onclick="showToast('首页功能开发中')">首页</div>
                             <div class="tab-item" onclick="navTo('balance')">余额明细</div>
                             <div class="tab-item active">积分明细</div>
                         </div>
@@ -605,6 +656,7 @@
                     <!-- 页签导航 -->
                     <div class="bg-white rounded-t-lg border-b">
                         <div class="flex">
+                            <div class="tab-item" onclick="showToast('首页功能开发中')">首页</div>
                             <div class="tab-item active">余额明细</div>
                             <div class="tab-item" onclick="navTo('points')">积分明细</div>
                         </div>
