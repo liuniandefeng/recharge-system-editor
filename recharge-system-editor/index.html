@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>壹直购好伙伴 - 账户管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        /* 登录页面背景 */
+        .login-bg {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea"/><stop offset="100%" style="stop-color:%23764ba2"/></linearGradient></defs><rect fill="url(%23g1)" width="1440" height="900"/><g opacity="0.1"><circle cx="200" cy="200" r="300" fill="%23fff"/><circle cx="1200" cy="700" r="400" fill="%23fff"/></g></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* 登录卡片样式 */
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        /* Tab样式 */
+        .tab-btn {
+            padding: 12px 24px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            color: #3B9DFF;
+            border-bottom-color: #3B9DFF;
+        }
+        
+        /* 输入框样式 */
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3B9DFF;
+            box-shadow: 0 0 0 3px rgba(59, 157, 255, 0.1);
+        }
+        
+        /* 验证码输入框 */
+        .code-input {
+            width: 120px;
+        }
+        
+        /* 主按钮 */
+        .btn-primary {
+            background: linear-gradient(135deg, #3B9DFF 0%, #1E90FF 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 157, 255, 0.4);
+        }
+        
+        /* 次要按钮 */
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: #eee;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            background: #001529;
+            width: 200px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        
+        /* 首页样式 */
+        .home-content {
+            margin-left: 200px;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        
+        /* 卡片样式 */
+        .module-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s;
+        }
+        .module-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        /* 待办卡片 */
+        .todo-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .todo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .todo-card .count {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        /* 数据统计卡片 */
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3B9DFF;
+        }
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+        .stat-card .label {
+            font-size: 14px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .stat-card .trend {
+            font-size: 12px;
+            color: #52c41a;
+            margin-top: 8px;
+        }
+        
+        /* 公告列表 */
+        .announcement-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .announcement-item:hover {
+            background: #fafafa;
+        }
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+        .announcement-item .title {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .announcement-item .time {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        /* FAQ手风琴 */
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            padding: 16px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+            font-size: 14px;
+        }
+        .faq-question:hover {
+            color: #3B9DFF;
+        }
+        .faq-answer {
+            display: none;
+            padding: 0 0 16px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        .faq-icon {
+            transition: transform 0.3s;
+        }
+        
+        /* 平台服务卡片 */
+        .service-card {
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .service-card .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3B9DFF 0%, #1E90FF 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+        
+        /* 公告弹窗 */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 800px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header .title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-header .page-num {
+            font-size: 12px;
+            color: #999;
+        }
+        .modal-body {
+            padding: 24px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-skip {
+            background: #f5f5f5;
+            color: #666;
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-skip:hover {
+            background: #eee;
+        }
+        .btn-action {
+            background: #3B9DFF;
+            color: white;
+            padding: 10px 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 100px;
+        }
+        .btn-action:hover {
+            background: #1E90FF;
+        }
+        
+        /* Toast通知 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 10000;
+            transform: translateX(120%);
+            transition: transform 0.4s;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        /* 蒙层 */
+        .mask-layer {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            display: none;
+        }
+        .mask-layer.show {
+            display: block;
+        }
+        
+        /* 二维码样式 */
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== 登录页面 ==================== -->
+    <div id="loginPage" class="login-bg min-h-screen flex items-center justify-center p-4">
+        <div class="flex max-w-5xl w-full">
+            <!-- 左侧产品介绍 -->
+            <div class="hidden lg:flex flex-1 flex-col justify-center text-white p-12">
+                <h1 class="text-4xl font-bold mb-4">壹直购好伙伴</h1>
+                <p class="text-xl mb-8 opacity-80">[打造车商好伙伴]</p>
+                
+                <div class="space-y-3 text-sm opacity-90">
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>集团管理</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>权益管理</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>车主俱乐部</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>卡券管理</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>权益金管理</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>事故车管理</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>拓客管理</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>续保管理</span>
+                    </div>
+                </div>
+                
+                <!-- 二维码 -->
+                <div class="flex gap-6 mt-12">
+                    <div class="text-center">
+                        <div class="qr-code mb-2">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs opacity-80">壹直购公众号</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="qr-code mb-2">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs opacity-80">壹直购小程序</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="qr-code mb-2">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs opacity-80">壹直购视频号</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧登录表单 -->
+            <div class="login-card p-8 w-full max-w-md">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800">欢迎登录</h2>
+                    <p class="text-gray-500 mt-2">壹直购好伙伴</p>
+                </div>
+                
+                <!-- 登录方式Tab -->
+                <div class="flex border-b mb-6">
+                    <div class="tab-btn active" onclick="switchTab('phone')">手机登录</div>
+                    <div class="tab-btn" onclick="switchTab('qr')">扫码登录</div>
+                </div>
+                
+                <!-- 手机登录表单 -->
+                <div id="phoneLogin">
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-600 mb-2">账号</label>
+                        <input type="text" id="loginAccount" class="input-field" placeholder="请输入账号" value="admin">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-600 mb-2">密码</label>
+                        <input type="password" id="loginPassword" class="input-field" placeholder="请输入密码" value="123456">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm text-gray-600 mb-2">验证码</label>
+                        <div class="flex gap-3">
+                            <input type="text" id="loginCode" class="input-field code-input" placeholder="验证码">
+                            <div class="flex-1 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer" onclick="refreshCode()" style="min-width: 80px;">
+                                <span id="codeText" class="font-mono text-lg tracking-wider select-none">A1B2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary w-full" onclick="handleLogin()">登 录</button>
+                </div>
+                
+                <!-- 扫码登录表单 -->
+                <div id="qrLogin" class="hidden text-center py-8">
+                    <div class="qr-code mx-auto mb-4" style="width: 180px; height: 180px;">
+                        <svg class="w-24 h-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                        </svg>
+                    </div>
+                    <p class="text-gray-500 text-sm">打开壹直购APP扫一扫登录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 首页 ==================== -->
+    <div id="homePage" class="hidden">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="p-6 text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">壹直购</span>
+                </div>
+            </div>
+            
+            <nav class="px-4">
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-500 text-white cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>首页</span>
+                    </div>
+                </div>
+                
+                <div class="mb-2 px-4 text-xs text-gray-500 uppercase">账户明细</div>
+                <div class="space-y-1 text-gray-400">
+                    <div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>积分明细</span>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        <span>余额明细</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="home-content">
+            <!-- 顶部导航 -->
+            <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                    <span class="text-gray-700 font-medium">首页</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="text-gray-500 hover:text-gray-700 relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">1</span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">1</div>
+                        <span class="text-sm text-gray-700">当前是张三-1门店</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 内容区域 -->
+            <div class="p-6">
+                <!-- 待办事项 -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">您的待办</h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="todo-card" onclick="showToast('积分上账审核页面开发中')">
+                            <div class="text-sm opacity-80">积分上账审核</div>
+                            <div class="count">12</div>
+                        </div>
+                        <div class="todo-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="showToast('批量发放审核页面开发中')">
+                            <div class="text-sm opacity-80">批量发放审核</div>
+                            <div class="count">12</div>
+                        </div>
+                        <div class="todo-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="showToast('服务券发放审核页面开发中')">
+                            <div class="text-sm opacity-80">服务券发放审核</div>
+                            <div class="count">1</div>
+                        </div>
+                        <div class="todo-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" onclick="showToast('事故车信息审核页面开发中')">
+                            <div class="text-sm opacity-80">事故车信息审核</div>
+                            <div class="count">4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据统计 -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">数据统计</h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="stat-card">
+                            <div class="value">0.00</div>
+                            <div class="label">今日发放积分</div>
+                            <div class="trend flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                                </svg>
+                                0.00% 较昨日
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value">0</div>
+                            <div class="label">今日发放人数</div>
+                            <div class="trend flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                                </svg>
+                                0.00% 较昨日
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value">0.00</div>
+                            <div class="label">今日领取积分</div>
+                            <div class="trend flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                                </svg>
+                                0.00% 较昨日
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value">0</div>
+                            <div class="label">批量上账失败待处理</div>
+                            <div class="trend text-gray-500 mt-2">
+                                —
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统公告 & 常见问题 -->
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <!-- 系统公告 -->
+                    <div class="module-card p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-gray-800">系统公告</h3>
+                            <a href="#" class="text-blue-500 text-sm hover:underline" onclick="event.preventDefault(); showToast('查看更多公告')">查看更多></a>
+                        </div>
+                        <div class="space-y-0">
+                            <div class="announcement-item" onclick="showAnnouncementDetail(0)">
+                                <div class="title">关于'事故车登记批量文件上传'功能优化的通知</div>
+                                <div class="time">2026-03-31 10:05:30</div>
+                            </div>
+                            <div class="announcement-item" onclick="showAnnouncementDetail(1)">
+                                <div class="title">【优化通知】积分批量上传功能升级：支持下载错误报告</div>
+                                <div class="time">2025-12-03 09:40:22</div>
+                            </div>
+                            <div class="announcement-item" onclick="showAnnouncementDetail(2)">
+                                <div class="title">关于'批量上账'新增'单条发放'功能上线的通知</div>
+                                <div class="time">2025-12-01 09:55:40</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 常见问题解答 -->
+                    <div class="module-card p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-gray-800">常见问题解答</h3>
+                            <a href="#" class="text-blue-500 text-sm hover:underline" onclick="event.preventDefault(); showToast('查看更多问题')">查看更多></a>
+                        </div>
+                        <div class="space-y-0">
+                            <div class="faq-item active">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <span>登录壹直购好伙伴时，收不到短信验证码怎么办？</span>
+                                    <svg class="faq-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                <div class="faq-answer">
+                                    请检查手机网络是否正常，短信是否被拦截。如仍未收到，请联系客服。
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <span>导入发放文件时失败，提示错误，应如何处理？</span>
+                                    <svg class="faq-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                <div class="faq-answer">
+                                    请检查文件格式是否符合要求，必要字段是否填写完整，编码格式是否为UTF-8。
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <span>如何领取和使用我的积分？</span>
+                                    <svg class="faq-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                <div class="faq-answer">
+                                    积分会自动发放到您的账户，您可以在积分明细中查看，使用时请前往相关门店消费。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 平台服务 -->
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="module-card p-5">
+                        <h3 class="font-semibold text-gray-800 mb-4">在线客服</h3>
+                        <div class="service-card">
+                            <div class="icon">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-500 mb-3">工作时间：工作日 8:30-19:00<br>节假日 9:00-18:00</p>
+                            <button class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600" onclick="showToast('客服功能开发中')">
+                                立即咨询
+                            </button>
+                        </div>
+                    </div>
+                    <div class="module-card p-5">
+                        <h3 class="font-semibold text-gray-800 mb-4">官方微信号</h3>
+                        <div class="service-card">
+                            <div class="qr-code" style="width: 120px; height: 120px;">
+                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-3">扫码关注官方公众号</p>
+                        </div>
+                    </div>
+                    <div class="module-card p-5">
+                        <h3 class="font-semibold text-gray-800 mb-4">壹直购好伙伴(移动端)</h3>
+                        <div class="service-card">
+                            <div class="qr-code" style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px;">
+                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-3">扫码登录，更便捷的移动端使用</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 系统公告弹窗 ==================== -->
+    <div class="modal-overlay" id="announcementModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="title">系统公告</div>
+                <div class="flex items-center gap-4">
+                    <span class="page-num" id="pageNum">1/3</span>
+                    <button onclick="skipAnnouncement()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body" id="announcementContent">
+                <!-- 动态填充 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-skip" onclick="skipAnnouncement()">跳过</button>
+                <button class="btn-action" id="modalActionBtn" onclick="nextAnnouncement()">下一步</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast通知 -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // ==================== 系统公告数据 ====================
+        const announcements = [
+            {
+                title: '关于"事故车登记批量文件上传"功能优化的通知',
+                content: '<p>尊敬的用户：</p><p>为了提升用户体验，我们对"事故车登记批量文件上传"功能进行了优化升级。本次更新主要包括：</p><ul style="margin: 16px 0; padding-left: 24px;"><li>支持更大文件上传，单文件最高可达10MB</li><li>优化上传速度，提升50%</li><li>新增上传进度实时显示</li><li>修复了部分用户反馈的上传失败问题</li></ul><p>如在使用过程中遇到问题，请联系客服。</p><p style="margin-top: 20px;">壹直购好伙伴<br>2026年3月31日</p>',
+                time: '2026-03-31 10:05:30'
+            },
+            {
+                title: '【优化通知】积分批量上传功能升级：支持下载错误报告',
+                content: '<p>尊敬的用户：</p><p>积分批量上传功能现已升级，新增支持下载错误报告功能。</p><p>升级内容：</p><ul style="margin: 16px 0; padding-left: 24px;"><li>上传失败时可下载详细的错误报告</li><li>错误报告包含失败原因及建议解决方案</li><li>支持批量修正后重新上传</li></ul><p>详情请访问帮助中心。</p><p style="margin-top: 20px;">壹直购好伙伴<br>2025年12月3日</p>',
+                time: '2025-12-03 09:40:22'
+            },
+            {
+                title: '关于"批量上账"新增"单条发放"功能上线的通知',
+                content: '<p>尊敬的用户：</p><p>我们很高兴地宣布，"批量上账"功能现已新增"单条发放"子功能。</p><p>新功能特点：</p><ul style="margin: 16px 0; padding-left: 24px;"><li>支持单独发放积分/权益</li><li>操作更灵活便捷</li><li>可追溯每笔发放记录</li></ul><p>欢迎体验！</p><p style="margin-top: 20px;">壹直购好伙伴<br>2025年12月1日</p>',
+                time: '2025-12-01 09:55:40'
+            }
+        ];
+        
+        let currentAnnouncementIndex = 0;
+        let hasShownAnnouncement = false; // 标记是否已显示过弹窗
+
+        // ==================== 登录相关 ====================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'phone') {
+                document.getElementById('phoneLogin').classList.remove('hidden');
+                document.getElementById('qrLogin').classList.add('hidden');
+            } else {
+                document.getElementById('phoneLogin').classList.add('hidden');
+                document.getElementById('qrLogin').classList.remove('hidden');
+            }
+        }
+
+        function refreshCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('codeText').textContent = code;
+        }
+
+        function handleLogin() {
+            const account = document.getElementById('loginAccount').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // 固定账号验证
+            if (account !== 'admin') {
+                showToast('账号不正确');
+                return;
+            }
+            if (password !== '123456') {
+                showToast('密码不正确');
+                return;
+            }
+            
+            // 登录成功，切换到首页
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('homePage').classList.remove('hidden');
+            
+            // 登录成功后，显示系统公告弹窗
+            showAnnouncementModal();
+        }
+
+        // ==================== 首页相关 ====================
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
+        }
+
+        function showAnnouncementDetail(index) {
+            currentAnnouncementIndex = index;
+            showAnnouncementModal();
+        }
+
+        // ==================== 系统公告弹窗 ====================
+        function showAnnouncementModal() {
+            // 如果已经显示过弹窗，不再显示
+            if (hasShownAnnouncement) return;
+            
+            const modal = document.getElementById('announcementModal');
+            const content = document.getElementById('announcementContent');
+            const pageNum = document.getElementById('pageNum');
+            const actionBtn = document.getElementById('modalActionBtn');
+            
+            const total = announcements.length;
+            const current = announcements[currentAnnouncementIndex];
+            
+            // 更新内容
+            content.innerHTML = `
+                <h4 class="text-lg font-semibold mb-4">${current.title}</h4>
+                <div class="text-sm text-gray-600 leading-relaxed">
+                    ${current.content}
+                </div>
+                <div class="text-xs text-gray-400 mt-4">发布时间：${current.time}</div>
+            `;
+            
+            // 更新页码
+            pageNum.textContent = `${currentAnnouncementIndex + 1}/${total}`;
+            
+            // 更新按钮
+            if (total === 1) {
+                // 单条公告
+                actionBtn.textContent = '我知道了';
+                actionBtn.onclick = closeAnnouncementModal;
+            } else if (currentAnnouncementIndex === total - 1) {
+                // 最后一条公告
+                actionBtn.textContent = '完成';
+                actionBtn.onclick = closeAnnouncementModal;
+            } else {
+                // 非最后一条公告
+                actionBtn.textContent = '下一步';
+                actionBtn.onclick = nextAnnouncement;
+            }
+            
+            modal.classList.add('active');
+            hasShownAnnouncement = true; // 标记已显示
+        }
+
+        function nextAnnouncement() {
+            if (currentAnnouncementIndex < announcements.length - 1) {
+                currentAnnouncementIndex++;
+                showAnnouncementModal();
+            }
+        }
+
+        function skipAnnouncement() {
+            closeAnnouncementModal();
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.remove('active');
+        }
+
+        // ==================== Toast通知 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 初始化验证码
+        refreshCode();
+    </script>
+</body>
+</html>
