@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>壹直购好伙伴 - 账户管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --sidebar: #1e293b;
+            --bg: #f1f5f9;
+        }
+        
+        body {
+            background-color: var(--bg);
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            background-color: var(--sidebar);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-item.active {
+            background-color: var(--primary);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* 按钮样式 */
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .data-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .data-table tr:hover td {
+            background-color: #f8fafc;
+        }
+        
+        /* 状态标签 */
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending { background: #fff7ed; color: #ea580c; }
+        .status-approved { background: #eff6ff; color: #2563eb; }
+        .status-success { background: #f0fdf4; color: #16a34a; }
+        .status-failed { background: #fef2f2; color: #dc2626; }
+        .status-cancelled { background: #f8fafc; color: #64748b; }
+        
+        /* 操作人标签 */
+        .operator-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .operator-self { background: #eff6ff; color: #2563eb; }
+        .operator-platform { background: #f3e8ff; color: #9333ea; }
+        .operator-system { background: #f1f5f9; color: #64748b; }
+        
+        /* 金额颜色 */
+        .amount-income { color: #16a34a; }
+        .amount-expense { color: #dc2626; }
+        
+        /* 弹窗动画 */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 520px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        /* Toast通知 */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .toast {
+            background: white;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: #1e293b;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            max-width: 320px;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #1e293b;
+        }
+        
+        .tooltip.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+        
+        .timeline-dot.completed {
+            background: #16a34a;
+        }
+        
+        .timeline-dot.processing {
+            background: #2563eb;
+            animation: pulse 2s infinite;
+        }
+        
+        .timeline-dot.pending {
+            background: #cbd5e1;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+        }
+        
+        /* 刷新动画 */
+        .refresh-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 页签样式 */
+        .tab-item {
+            padding: 12px 20px;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-item:hover {
+            color: #2563eb;
+        }
+        
+        .tab-item.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            font-weight: 500;
+        }
+        
+        /* 渐变卡片 */
+        .gradient-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        /* 分页 */
+        .pagination-btn {
+            padding: 8px 14px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        
+        .pagination-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* 页面切换 */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 下拉菜单 */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        /* 单选按钮自定义样式 */
+        .radio-custom {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .radio-custom:checked {
+            border-color: #2563eb;
+        }
+        
+        .radio-custom:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #2563eb;
+            border-radius: 50%;
+        }
+        
+        /* 输入框聚焦 */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Toast容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <p class="font-medium mb-1">待充值金额计算规则</p>
+        <div class="border-t border-gray-600 my-2"></div>
+        <p class="text-gray-300 text-xs leading-relaxed">
+            待充值金额 = 有效回款单金额 × 对应客户结算系数<br>
+            系统自动识别您已提交的有效回款单<br>
+            不同结算系数的商户将展示对应可充值金额<br>
+            金额由系统自动计算，确保准确无误<br>
+            如有疑问，请联系您的专属商务经理咨询
+        </p>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- 左侧侧边栏 -->
+        <aside class="sidebar w-64 flex-shrink-0 fixed h-full overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center gap-3 text-white">
+                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">壹直购</span>
+                </div>
+            </div>
+            
+            <nav class="px-4 pb-6">
+                <!-- 首页导航 -->
+                <div class="mb-6">
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('首页功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>首页</span>
+                    </div>
+                </div>
+                
+                <!-- 账户明细分组 -->
+                <div class="mb-2 px-4 text-xs text-gray-500 uppercase tracking-wider">账户明细</div>
+                <div class="space-y-1">
+                    <div id="nav-points" class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-lg text-white cursor-pointer" onclick="navTo('points')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>积分明细</span>
+                    </div>
+                    <div id="nav-balance" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="navTo('balance')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                        <span>余额明细</span>
+                    </div>
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('权益金明细功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>权益金明细</span>
+                    </div>
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('授信单明细功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>授信单明细</span>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 ml-64">
+            <!-- 顶部导航栏 -->
+            <header class="bg-white shadow-sm sticky top-0 z-50">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <!-- 面包屑 -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-500">首页</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        <span id="breadcrumb-text" class="text-gray-900 font-medium">积分明细</span>
+                    </div>
+                    
+                    <!-- 用户头像下拉 -->
+                    <div class="dropdown relative">
+                        <div class="flex items-center gap-3 cursor-pointer">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                                张
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="text-sm font-medium text-gray-900">张三</div>
+                                <div class="text-xs text-gray-500">超级管理员</div>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="dropdown-menu mt-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showToast('个人中心功能开发中')">个人中心</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showToast('账户设置功能开发中')">账户设置</a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50" onclick="showToast('已退出登录')">退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面内容 -->
+            <div class="p-6">
+                <!-- 页面1：积分明细 -->
+                <div id="page-points" class="page-section active">
+                    <!-- 页签导航 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item" onclick="showToast('首页功能开发中')">首页</div>
+                            <div class="tab-item" onclick="navTo('balance')">余额明细</div>
+                            <div class="tab-item active">积分明细</div>
+                        </div>
+                    </div>
+
+                    <!-- 账户概览 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span class="font-medium">积分余额</span>
+                                </div>
+                                <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="handleRefresh(this)">
+                                    <svg class="w-5 h-5 text-gray-500 refresh-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="text-3xl font-bold text-gray-900" id="pointsBalance">221.88</div>
+                            <div class="text-sm text-gray-500 mt-1">总可用额度(积分)</div>
+                        </div>
+                        
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    <span class="font-medium">待充值金额</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <div class="text-3xl font-bold text-orange-500" id="pointsMaxRecharge">10,000.00</div>
+                                    <div class="text-sm text-gray-500 mt-1 flex items-center gap-1">基于您的回款金额计算
+                                        <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium" onclick="openRechargeModal('points')">
+                                    + 去充值
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 筛选区域 -->
+                    <div class="card p-5 mb-6">
+                        <div class="flex flex-wrap items-end gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="date" id="pointsStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    <span class="text-gray-400">至</span>
+                                    <input type="date" id="pointsEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">类型</label>
+                                <select id="pointsTypeFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32">
+                                    <option value="">全部</option>
+                                    <option value="积分退还">积分退还</option>
+                                    <option value="积分充值">积分充值</option>
+                                    <option value="积分发放">积分发放</option>
+                                    <option value="系统">系统</option>
+                                    <option value="积分扣除">积分扣除</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">操作人</label>
+                                <select id="pointsOperatorFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32">
+                                    <option value="">全部</option>
+                                    <option value="self">自主充值</option>
+                                    <option value="platform">平台充值</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-2 ml-auto">
+                                <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterPointsData()">查询</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetPointsFilter()">重置</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2" onclick="exportPointsData()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    导出
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 积分明细表格 -->
+                    <div class="card mb-6">
+                        <div class="p-5 border-b">
+                            <h3 class="font-semibold text-gray-900">积分明细</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>变更积分</th>
+                                        <th>变更后账户积分</th>
+                                        <th>操作人</th>
+                                        <th>描述</th>
+                                        <th>变更时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pointsTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span id="pointsTotal">15</span> 条记录</span>
+                            <div class="flex gap-1" id="pointsPagination"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 页面2：余额明细 -->
+                <div id="page-balance" class="page-section">
+                    <!-- 页签导航 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item" onclick="showToast('首页功能开发中')">首页</div>
+                            <div class="tab-item active">余额明细</div>
+                            <div class="tab-item" onclick="navTo('points')">积分明细</div>
+                        </div>
+                    </div>
+
+                    <!-- 账户概览 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                    </svg>
+                                    <span class="font-medium">账户余额</span>
+                                </div>
+                                <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="refreshBalance(this)">
+                                    <svg class="w-5 h-5 text-gray-500 refresh-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="text-3xl font-bold text-gray-900" id="balanceAmount">1.99</div>
+                            <div class="text-sm text-gray-500 mt-1">总可用额度(元)</div>
+                        </div>
+                        
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    <span class="font-medium">待充值金额</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <div class="text-3xl font-bold text-orange-500" id="balanceMaxRecharge">8,000.00</div>
+                                    <div class="text-sm text-gray-500 mt-1 flex items-center gap-1">基于您的回款金额计算
+                                        <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium" onclick="openRechargeModal('balance')">
+                                    + 去充值
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 筛选区域 -->
+                    <div class="card p-5 mb-6">
+                        <div class="flex flex-wrap items-end gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="date" id="balanceStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    <span class="text-gray-400">至</span>
+                                    <input type="date" id="balanceEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">类型</label>
+                                <select id="balanceTypeFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-40">
+                                    <option value="">全部</option>
+                                    <option value="余额充值">余额充值</option>
+                                    <option value="批量发放">批量发放</option>
+                                    <option value="批量发放退回">批量发放退回</option>
+                                    <option value="批量发放明细退回">批量发放明细退回</option>
+                                    <option value="系统">系统</option>
+                                    <option value="余额扣除">余额扣除</option>
+                                    <option value="手续费">手续费</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">操作人</label>
+                                <select id="balanceOperatorFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32">
+                                    <option value="">全部</option>
+                                    <option value="self">自主充值</option>
+                                    <option value="platform">平台充值</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-2 ml-auto">
+                                <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterBalanceData()">查询</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetBalanceFilter()">重置</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 余额明细表格 -->
+                    <div class="card mb-6">
+                        <div class="p-5 border-b">
+                            <h3 class="font-semibold text-gray-900">余额明细</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>变更金额</th>
+                                        <th>变更后账户余额</th>
+                                        <th>操作人</th>
+                                        <th>描述</th>
+                                        <th>变更时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="balanceTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span id="balanceTotal">16</span> 条记录</span>
+                            <div class="flex gap-1" id="balancePagination"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- 充值弹窗 -->
+    <div class="modal-overlay" id="rechargeModal">
+        <div class="modal-content">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold" id="rechargeModalTitle">账户充值</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('rechargeModal')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- 商户信息 -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div class="text-sm text-gray-500">当前充值门店</div>
+                    <div class="font-medium text-gray-900 mt-1">广东张三有限公司</div>
+                </div>
+                
+                <!-- 充值提示 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-5 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="text-sm text-blue-700">
+                        <span class="font-medium">充值金额说明</span><br>
+                        可充值金额已根据您的账户采购折扣自动计算，确保金额准确无误。
+                    </div>
+                </div>
+                
+                <!-- 充值账户 -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">请选择充值账户 <span class="text-red-500">*</span></label>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300" id="accountOption1">
+                            <input type="radio" name="rechargeAccount" value="points" class="radio-custom" checked onchange="updateAccountInfo()">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">积分账户</div>
+                                <div class="text-sm text-gray-500 mt-1">当前余额：<span class="text-gray-700" id="pointsAccountBalance">221.88</span>积分</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">可充金额</div>
+                                <div class="font-semibold text-gray-900" id="pointsMaxAmount">10,000.00</div>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300" id="accountOption2">
+                            <input type="radio" name="rechargeAccount" value="batch" class="radio-custom" onchange="updateAccountInfo()">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">批量账户</div>
+                                <div class="text-sm text-gray-500 mt-1">当前余额：<span class="text-gray-700" id="batchAccountBalance">1.99</span>元</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">可充金额</div>
+                                <div class="font-semibold text-gray-900" id="batchMaxAmount">8,000.00</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 充值金额 -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">充值金额 <span class="text-red-500">*</span></label>
+                    <div class="flex gap-2">
+                        <input type="number" id="rechargeAmount" class="flex-1 border border-gray-300 rounded-lg px-3 py-2.5" placeholder="请输入充值金额" step="0.01">
+                        <button class="px-4 py-2 text-blue-600 text-sm font-medium hover:text-blue-700 whitespace-nowrap" onclick="setMaxRecharge()">全部充值</button>
+                    </div>
+                </div>
+
+                <!-- 按钮 -->
+                <div class="flex gap-3">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('rechargeModal')">取消</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="openConfirmModal()">确认充值</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二次确认弹窗 -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content" style="max-width: 440px;">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">充值确认</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('confirmModal')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- 警告提示 -->
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-5 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div class="text-sm text-amber-700">
+                        <span class="font-medium">请确认充值信息</span><br>
+                        充值确认后将立即扣款，无法撤销，请仔细核对信息
+                    </div>
+                </div>
+
+                <!-- 确认信息 -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值门店</span>
+                        <span class="text-gray-900 text-sm font-medium">广东张三有限公司</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值账户</span>
+                        <span class="text-gray-900 text-sm font-medium" id="confirmAccount">积分账户</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">当前账户余额</span>
+                        <span class="text-gray-900 text-sm font-medium" id="confirmCurrentBalance">221.88积分</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值金额</span>
+                        <span class="text-green-600 text-sm font-bold" id="confirmAmount">+10,000.00 积分</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值后账户余额</span>
+                        <span class="text-blue-600 text-sm font-bold" id="confirmAfterBalance">10,221.88 积分</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="backToRecharge()">取消</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="submitRecharge()">确认立即充值</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 充值成功弹窗 -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="p-8 text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">充值成功</h3>
+                <p class="text-sm text-gray-500 mb-6" id="successDesc">积分已实时到账，您可以立即使用</p>
+
+                <div class="flex gap-3">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" id="viewDetailBtn" onclick="viewDetail()">查看明细</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="finishRecharge()">完成</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== Mock数据 ====================
+        const allPointsData = [
+            { name: '积分充值', type: '积分充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '积分充值，共充值积分：10.00', time: '2026-04-23 16:37:45' },
+            { name: '积分充值', type: '积分充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '积分充值，共充值积分：10.00', time: '2026-03-23 16:37:45' },
+            { name: '积分充值', type: '积分充值', change: 150.00, balance: 150.00, operator: '平台充值', operatorType: 'platform', desc: '积分充值，共充值积分：150.00', time: '2026-02-23 16:37:45' },
+            { name: '积分发放', type: '积分发放', change: 152.00, balance: 152.00, operator: '平台充值', operatorType: 'platform', desc: '积分发放，共发放积分：152.00', time: '2025-12-13 14:01:25' },
+            { name: '积分退还', type: '积分退还', change: 500.00, balance: 500.00, operator: '系统', operatorType: 'system', desc: '积分退还，共退还积分：500.00', time: '2025-11-20 10:30:00' },
+            { name: '积分扣除', type: '积分扣除', change: -200.00, balance: 200.00, operator: '系统', operatorType: 'system', desc: '积分扣除，共扣除积分：200.00', time: '2025-10-15 09:20:00' },
+            { name: '系统调整', type: '系统', change: 1000.00, balance: 1000.00, operator: '系统', operatorType: 'system', desc: '系统调整，共调整积分：1000.00', time: '2025-09-08 14:50:00' }
+        ];
+
+        const balanceData = [
+            { name: '余额充值', type: '余额充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '余额充值，共充值金额：10.00', time: '2026-04-23 16:37:45' },
+            { name: '余额充值', type: '余额充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '余额充值，共充值金额：10.00', time: '2026-03-23 16:37:45' },
+            { name: '批量发放', type: '批量发放', change: -150.00, balance: 150.00, operator: '平台充值', operatorType: 'platform', desc: '批量发放，共发放金额：150.00', time: '2026-02-23 16:37:45' },
+            { name: '批量发放退回', type: '批量发放退回', change: 152.00, balance: 152.00, operator: '系统', operatorType: 'system', desc: '批量发放退回，共退回金额：152.00', time: '2025-12-13 14:01:25' },
+            { name: '批量发放明细退回', type: '批量发放明细退回', change: 500.00, balance: 500.00, operator: '系统', operatorType: 'system', desc: '批量发放明细退回，共退回金额：500.00', time: '2025-11-20 10:30:00' },
+            { name: '余额扣除', type: '余额扣除', change: -200.00, balance: 200.00, operator: '系统', operatorType: 'system', desc: '余额扣除，共扣除金额：200.00', time: '2025-10-15 09:20:00' },
+            { name: '手续费', type: '手续费', change: -5.00, balance: 5.00, operator: '系统', operatorType: 'system', desc: '手续费，共扣除金额：5.00', time: '2025-09-08 14:50:00' }
+        ];
+
+        // ==================== 全局状态 ====================
+        let currentPage = 'points';
+        let pointsPageNum = 1;
+        let balancePageNum = 1;
+        let filteredPointsData = [...allPointsData];
+        let filteredBalanceData = [...balanceData];
+        let currentRechargeType = 'points';
+        
+        // 账户余额和待充值额度
+        let pointsBalanceValue = 221.88;
+        let balanceAmountValue = 1.99;
+        let pointsMaxRechargeValue = 10000.00;
+        let balanceMaxRechargeValue = 8000.00;
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认日期
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('pointsEndDate').value = formatDate(today);
+            document.getElementById('pointsStartDate').value = formatDate(thirtyDaysAgo);
+            document.getElementById('balanceEndDate').value = formatDate(today);
+            document.getElementById('balanceStartDate').value = formatDate(thirtyDaysAgo);
+            
+            // 初始化表格
+            renderPointsTable();
+            renderBalanceTable();
+        });
+
+        // ==================== 路由控制 ====================
+        function navTo(page) {
+            currentPage = page;
+            
+            // 隐藏所有页面
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            
+            // 显示目标页面
+            document.getElementById('page-' + page).classList.add('active');
+            
+            // 更新侧边栏高亮
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            if (page === 'points' || page === 'balance') {
+                document.getElementById('nav-' + page).classList.add('active');
+            }
+            
+            // 更新面包屑
+            const breadcrumbMap = {
+                'points': '积分明细',
+                'balance': '余额明细',
+                'detail': '充值记录详情'
+            };
+            document.getElementById('breadcrumb-text').textContent = breadcrumbMap[page];
+            
+            // 更新URL hash
+            history.replaceState(null, '', '#' + page);
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 监听hash变化
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash.replace('#', '');
+            if (['points', 'balance', 'detail'].includes(hash)) {
+                navTo(hash);
+            }
+        });
+        
+        // 页面加载时根据hash初始化（直接执行，因为script在body底部）
+        (function() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && ['points', 'balance', 'detail'].includes(hash)) {
+                navTo(hash);
+            }
+        })();
+
+        // ==================== 弹窗控制 ====================
+        function openRechargeModal(type) {
+            currentRechargeType = type;
+            // 积分明细默认选中积分账户，余额明细默认选中批量账户
+            const defaultAccount = type === 'points' ? 'points' : 'batch';
+            document.querySelector(`input[name="rechargeAccount"][value="${defaultAccount}"]`).checked = true;
+            
+            // 更新弹窗中的余额和可充金额显示
+            document.getElementById('pointsAccountBalance').textContent = pointsBalanceValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('pointsMaxAmount').textContent = pointsMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchAccountBalance').textContent = balanceAmountValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchMaxAmount').textContent = balanceMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            
+            updateAccountInfo();
+            document.getElementById('rechargeAmount').value = '';
+            document.getElementById('rechargeModal').classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function updateAccountInfo() {
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const amountInput = document.getElementById('rechargeAmount');
+            amountInput.value = '';
+        }
+
+        function openConfirmModal() {
+            const amount = parseFloat(document.getElementById('rechargeAmount').value);
+            if (!amount || amount <= 0) {
+                showToast('请输入有效的充值金额');
+                return;
+            }
+
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const isPoints = selected === 'points';
+            const accountName = isPoints ? '积分账户' : '批量账户';
+            const unit = isPoints ? '积分' : '元';
+            const currentBalance = isPoints ? 221.88 : 1.99;
+            const maxAmount = isPoints ? 10000 : 8000;
+
+            if (amount > maxAmount) {
+                showToast('充值金额不能超过可充金额');
+                return;
+            }
+
+            const afterBalance = (currentBalance + amount).toFixed(2);
+
+            document.getElementById('confirmAccount').textContent = accountName;
+            document.getElementById('confirmCurrentBalance').textContent = currentBalance.toFixed(2) + unit;
+            document.getElementById('confirmAmount').textContent = '+' + amount.toLocaleString('zh-CN', {minimumFractionDigits: 2}) + ' ' + unit;
+            document.getElementById('confirmAfterBalance').textContent = parseFloat(afterBalance).toLocaleString('zh-CN', {minimumFractionDigits: 2}) + ' ' + unit;
+
+            closeModal('rechargeModal');
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function backToRecharge() {
+            closeModal('confirmModal');
+            document.getElementById('rechargeModal').classList.add('active');
+        }
+
+        function submitRecharge() {
+            closeModal('confirmModal');
+            const isPoints = currentRechargeType === 'points' || document.querySelector('input[name="rechargeAccount"]:checked').value === 'points';
+            const amount = parseFloat(document.getElementById('rechargeAmount').value);
+            const now = new Date();
+            const timeStr = formatDate(now) + ' ' + now.toTimeString().slice(0, 8);
+            
+            if (isPoints) {
+                // 积分充值闭环
+                pointsMaxRechargeValue -= amount;
+                pointsBalanceValue += amount;
+                
+                // 生成积分充值流水
+                const newRecord = {
+                    name: '积分充值',
+                    type: '积分充值',
+                    change: amount,
+                    balance: pointsBalanceValue,
+                    operator: '自主充值',
+                    operatorType: 'self',
+                    desc: `积分充值，共充值积分：${amount.toFixed(2)}`,
+                    time: timeStr
+                };
+                allPointsData.unshift(newRecord);
+                filteredPointsData = [...allPointsData];
+                
+                // 更新页面显示
+                document.getElementById('pointsBalance').textContent = pointsBalanceValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('pointsMaxRecharge').textContent = pointsMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('pointsMaxAmount').textContent = pointsMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('successDesc').textContent = '积分已实时到账，您可以立即使用';
+                
+                // 刷新表格
+                pointsPageNum = 1;
+                renderPointsTable();
+            } else {
+                // 余额充值闭环
+                balanceMaxRechargeValue -= amount;
+                balanceAmountValue += amount;
+                
+                // 生成余额充值流水
+                const newRecord = {
+                    name: '余额充值',
+                    type: '余额充值',
+                    change: amount,
+                    balance: balanceAmountValue,
+                    operator: '自主充值',
+                    operatorType: 'self',
+                    desc: `余额充值，共充值金额：${amount.toFixed(2)}`,
+                    time: timeStr
+                };
+                balanceData.unshift(newRecord);
+                filteredBalanceData = [...balanceData];
+                
+                // 更新页面显示
+                document.getElementById('balanceAmount').textContent = balanceAmountValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('balanceMaxRecharge').textContent = balanceMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('batchMaxAmount').textContent = balanceMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('successDesc').textContent = '金额已实时到账，您可以立即使用';
+                
+                // 刷新表格
+                balancePageNum = 1;
+                renderBalanceTable();
+            }
+            
+            // 根据充值类型动态设置按钮文本
+            document.getElementById('viewDetailBtn').textContent = isPoints ? '查看积分明细' : '查看余额明细';
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function viewDetail() {
+            closeModal('successModal');
+            const isPoints = currentRechargeType === 'points';
+            
+            if (isPoints) {
+                // 积分充值后，跳转到积分明细并筛选积分充值类型
+                navTo('points');
+                document.getElementById('pointsTypeFilter').value = '积分充值';
+                filterPointsData();
+            } else {
+                // 余额充值后，跳转到余额明细并筛选余额充值类型
+                navTo('balance');
+                document.getElementById('balanceTypeFilter').value = '余额充值';
+                filterBalanceData();
+            }
+        }
+
+        function finishRecharge() {
+            closeModal('successModal');
+            showToast('充值成功，余额已更新');
+        }
+
+        function setMaxRecharge() {
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const maxAmount = selected === 'points' ? pointsMaxRechargeValue : balanceMaxRechargeValue;
+            document.getElementById('rechargeAmount').value = maxAmount;
+        }
+
+        // ==================== 表格渲染 ====================
+        function renderPointsTable() {
+            const tbody = document.getElementById('pointsTableBody');
+            const pageSize = 10;
+            const start = (pointsPageNum - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = filteredPointsData.slice(start, end);
+            
+            tbody.innerHTML = pageData.map(item => {
+                // 仅积分充值类型展示操作人字段
+                const operatorCell = item.type === '积分充值' 
+                    ? `<td>${getOperatorTag(item.operator, item.operatorType)}</td>` 
+                    : '<td>-</td>';
+                return `
+                <tr>
+                    <td class="font-medium text-gray-900">${item.name}</td>
+                    <td>${getTypeLabel(item.type)}</td>
+                    <td class="${item.change > 0 ? 'amount-income' : 'amount-expense'} font-medium">
+                        ${item.change > 0 ? '+' : ''}${item.change.toLocaleString('zh-CN', {minimumFractionDigits: 2})}
+                    </td>
+                    <td>${item.balance.toLocaleString('zh-CN', {minimumFractionDigits: 2})}</td>
+                    ${operatorCell}
+                    <td class="text-gray-500">${item.desc}</td>
+                    <td class="text-gray-500">${item.time}</td>
+                </tr>
+            `}).join('');
+            
+            document.getElementById('pointsTotal').textContent = filteredPointsData.length;
+            renderPagination('pointsPagination', filteredPointsData.length, pointsPageNum, pageSize, goPointsPage);
+        }
+
+        function renderBalanceTable() {
+            const tbody = document.getElementById('balanceTableBody');
+            const pageSize = 10;
+            const start = (balancePageNum - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = filteredBalanceData.slice(start, end);
+            
+            tbody.innerHTML = pageData.map(item => {
+                // 仅余额充值类型展示操作人字段
+                const operatorCell = item.type === '余额充值' 
+                    ? `<td>${getOperatorTag(item.operator, item.operatorType)}</td>` 
+                    : '<td>-</td>';
+                return `
+                <tr>
+                    <td class="font-medium text-gray-900">${item.name}</td>
+                    <td>${getBalanceTypeLabel(item.type)}</td>
+                    <td class="${item.change > 0 ? 'amount-income' : 'amount-expense'} font-medium">
+                        ${item.change > 0 ? '+' : ''}${item.change.toLocaleString('zh-CN', {minimumFractionDigits: 2})}
+                    </td>
+                    <td>${item.balance.toLocaleString('zh-CN', {minimumFractionDigits: 2})}</td>
+                    ${operatorCell}
+                    <td class="text-gray-500">${item.desc}</td>
+                    <td class="text-gray-500">${item.time}</td>
+                </tr>
+            `}).join('');
+            
+            document.getElementById('balanceTotal').textContent = filteredBalanceData.length;
+            renderPagination('balancePagination', filteredBalanceData.length, balancePageNum, pageSize, goBalancePage);
+        }
+
+        function renderPagination(containerId, total, current, pageSize, callback) {
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) {
+                document.getElementById(containerId).innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // 上一页
+            html += `<button class="pagination-btn rounded-l-lg" ${current === 1 ? 'disabled' : ''} onclick="${callback.name}(${current - 1})">上一页</button>`;
+            
+            // 页码
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= current - 1 && i <= current + 1)) {
+                    html += `<button class="pagination-btn ${i === current ? 'active' : ''}" onclick="${callback.name}(${i})">${i}</button>`;
+                } else if (i === current - 2 || i === current + 2) {
+                    html += `<span class="pagination-btn">...</span>`;
+                }
+            }
+            
+            // 下一页
+            html += `<button class="pagination-btn rounded-r-lg" ${current === totalPages ? 'disabled' : ''} onclick="${callback.name}(${current + 1})">下一页</button>`;
+            
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        // ==================== 分页控制 ====================
+        function goPointsPage(page) {
+            pointsPageNum = page;
+            renderPointsTable();
+        }
+
+        function goBalancePage(page) {
+            balancePageNum = page;
+            renderBalanceTable();
+        }
+
+        // ==================== 筛选功能 ====================
+        function filterPointsData() {
+            const startDate = document.getElementById('pointsStartDate').value;
+            const endDate = document.getElementById('pointsEndDate').value;
+            const type = document.getElementById('pointsTypeFilter').value;
+            const operator = document.getElementById('pointsOperatorFilter').value;
+            
+            filteredPointsData = allPointsData.filter(item => {
+                if (startDate && item.time < startDate + ' 00:00:00') return false;
+                if (endDate && item.time > endDate + ' 23:59:59') return false;
+                if (type && item.type !== type) return false;
+                if (operator && item.operatorType !== operator) return false;
+                return true;
+            });
+            
+            pointsPageNum = 1;
+            renderPointsTable();
+            showToast('筛选完成，共 ' + filteredPointsData.length + ' 条记录');
+        }
+
+        function filterBalanceData() {
+            const startDate = document.getElementById('balanceStartDate').value;
+            const endDate = document.getElementById('balanceEndDate').value;
+            const type = document.getElementById('balanceTypeFilter').value;
+            const operator = document.getElementById('balanceOperatorFilter').value;
+            
+            filteredBalanceData = balanceData.filter(item => {
+                if (startDate && item.time < startDate + ' 00:00:00') return false;
+                if (endDate && item.time > endDate + ' 23:59:59') return false;
+                if (type && item.type !== type) return false;
+                if (operator && item.operatorType !== operator) return false;
+                return true;
+            });
+            
+            balancePageNum = 1;
+            renderBalanceTable();
+            showToast('筛选完成，共 ' + filteredBalanceData.length + ' 条记录');
+        }
+
+        function resetPointsFilter() {
+            document.getElementById('pointsTypeFilter').value = '';
+            document.getElementById('pointsOperatorFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('pointsEndDate').value = formatDate(today);
+            document.getElementById('pointsStartDate').value = formatDate(thirtyDaysAgo);
+            
+            filteredPointsData = [...allPointsData];
+            pointsPageNum = 1;
+            renderPointsTable();
+            showToast('已重置筛选条件');
+        }
+
+        function resetBalanceFilter() {
+            document.getElementById('balanceTypeFilter').value = '';
+            document.getElementById('balanceOperatorFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('balanceEndDate').value = formatDate(today);
+            document.getElementById('balanceStartDate').value = formatDate(thirtyDaysAgo);
+            
+            filteredBalanceData = [...balanceData];
+            balancePageNum = 1;
+            renderBalanceTable();
+            showToast('已重置筛选条件');
+        }
+
+        function exportPointsData() {
+            showToast('数据导出中，请稍候...');
+            setTimeout(() => {
+                showToast('导出成功！文件已下载');
+            }, 1500);
+        }
+
+        // ==================== 刷新功能 ====================
+        function handleRefresh(btn) {
+            const icon = btn.querySelector('.refresh-icon');
+            icon.classList.add('refresh-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('refresh-spin');
+                // 模拟数据更新
+                const newBalance = (221 + Math.random() * 10).toFixed(2);
+                document.getElementById('pointsBalance').textContent = parseFloat(newBalance).toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                showToast('积分余额已刷新');
+            }, 1000);
+        }
+
+        function refreshBalance(btn) {
+            const icon = btn.querySelector('.refresh-icon');
+            icon.classList.add('refresh-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('refresh-spin');
+                const newBalance = (1 + Math.random() * 5).toFixed(2);
+                document.getElementById('balanceAmount').textContent = parseFloat(newBalance).toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                showToast('账户余额已刷新');
+            }, 1000);
+        }
+
+        // ==================== Toast通知 ====================
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="text-gray-700">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // 触发动画
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // 自动移除
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==================== Tooltip ====================
+        function showTooltip(event) {
+            const tooltip = document.getElementById('tooltip');
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = (rect.bottom + 8) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        // ==================== 辅助函数 ====================
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getTypeLabel(type) {
+            const map = {
+                'income': '收入',
+                'expense': '支出',
+                'recharge': '充值',
+                'consume': '消费',
+                'exchange': '兑换',
+                'refund': '退款'
+            };
+            return map[type] || type;
+        }
+
+        function getBalanceTypeLabel(type) {
+            const map = {
+                'recharge': '充值',
+                'withdraw': '提现',
+                'consume': '消费',
+                'refund': '退款',
+                'transfer': '转账'
+            };
+            return map[type] || type;
+        }
+
+        function getOperatorTag(name, type) {
+            if (type === 'self') {
+                return '<a href="#" class="text-blue-600 hover:underline text-sm" onclick="event.preventDefault()">自主充值</a>';
+            } else if (type === 'platform' || type === 'admin') {
+                return '<span class="operator-tag operator-platform">平台充值</span>';
+            } else {
+                return '<span class="operator-tag operator-system">' + name + '</span>';
+            }
+        }
+
+        // 点击遮罩关闭弹窗
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
