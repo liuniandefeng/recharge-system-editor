@@ -1586,9 +1586,10 @@
                 <div class="mb-5">
                     <label class="block text-sm font-medium text-gray-700 mb-2">充值金额 <span class="text-red-500">*</span></label>
                     <div class="flex gap-2">
-                        <input type="number" id="rechargeAmount" class="flex-1 border border-gray-300 rounded-lg px-3 py-2.5" placeholder="请输入充值金额" step="0.01">
+                        <input type="text" id="rechargeAmount" class="flex-1 border border-gray-300 rounded-lg px-3 py-2.5" placeholder="请输入充值金额" oninput="validateRechargeAmount(this)">
                         <button class="px-4 py-2 text-blue-600 text-sm font-medium hover:text-blue-700 whitespace-nowrap" onclick="setMaxRecharge()">全部充值</button>
                     </div>
+                    <div id="rechargeAmountError" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
                 <!-- 按钮 -->
@@ -1933,24 +1934,95 @@
             const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
             const amountInput = document.getElementById('rechargeAmount');
             amountInput.value = '';
+            document.getElementById('rechargeAmountError').classList.add('hidden');
+        }
+
+        // 充值金额输入校验
+        function validateRechargeAmount(input) {
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const isPoints = selected === 'points';
+            const errorDiv = document.getElementById('rechargeAmountError');
+            const value = input.value;
+            
+            // 清空错误提示
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+            
+            if (value === '') return;
+            
+            if (isPoints) {
+                // 积分充值：仅支持正整数
+                if (!/^\d+$/.test(value)) {
+                    // 包含非数字字符，可能是小数
+                    if (value.includes('.')) {
+                        errorDiv.textContent = '积分充值不支持小数';
+                        errorDiv.classList.remove('hidden');
+                    }
+                    // 过滤掉非数字字符
+                    input.value = value.replace(/[^\d]/g, '');
+                    return;
+                }
+            } else {
+                // 余额充值：支持最多两位小数
+                if (!/^\d*\.?\d{0,2}$/.test(value)) {
+                    errorDiv.textContent = '批量充值最多支持两位小数';
+                    errorDiv.classList.remove('hidden');
+                    // 限制为两位小数
+                    const match = value.match(/^(\d*\.?\d{0,2})/);
+                    input.value = match ? match[1] : '';
+                    return;
+                }
+            }
         }
 
         function openConfirmModal() {
-            const amount = parseFloat(document.getElementById('rechargeAmount').value);
-            if (!amount || amount <= 0) {
-                showToast('请输入有效的充值金额');
-                return;
-            }
-
+            const amountInput = document.getElementById('rechargeAmount');
+            const amountValue = amountInput.value.trim();
+            const errorDiv = document.getElementById('rechargeAmountError');
+            
             const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
             const isPoints = selected === 'points';
             const accountName = isPoints ? '积分账户' : '批量账户';
             const unit = isPoints ? '积分' : '元';
             const currentBalance = isPoints ? 221.88 : 1.99;
             const maxAmount = isPoints ? 10000 : 8000;
-
+            
+            // 校验1：不能为空
+            if (!amountValue || amountValue === '') {
+                errorDiv.textContent = '充值金额不能为空';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            // 校验2：积分仅支持正整数
+            if (isPoints) {
+                if (!/^\d+$/.test(amountValue)) {
+                    errorDiv.textContent = '积分充值不支持小数';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+            } else {
+                // 余额最多两位小数
+                if (!/^\d+\.?\d{0,2}$/.test(amountValue)) {
+                    errorDiv.textContent = '批量充值最多支持两位小数';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+            }
+            
+            const amount = parseFloat(amountValue);
+            
+            // 校验3：必须大于0
+            if (amount <= 0) {
+                errorDiv.textContent = '请输入有效的充值金额';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            // 校验4：不能超过可充金额
             if (amount > maxAmount) {
-                showToast('充值金额不能超过可充金额');
+                errorDiv.textContent = '充值金额不能超过可充金额';
+                errorDiv.classList.remove('hidden');
                 return;
             }
 
