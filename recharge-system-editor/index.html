@@ -2174,13 +2174,20 @@
             const type = document.getElementById('pointsTypeFilter').value;
             const operator = document.getElementById('pointsOperatorFilter').value;
             
+            console.log('筛选条件:', { startDate, endDate, type, operator });
+            console.log('原始数据:', allPointsData);
+            
             filteredPointsData = allPointsData.filter(item => {
-                if (startDate && item.time < startDate + ' 00:00:00') return false;
-                if (endDate && item.time > endDate + ' 23:59:59') return false;
-                if (type && item.type !== type) return false;
-                if (operator && item.operatorType !== operator) return false;
-                return true;
+                let match = true;
+                if (startDate && item.time < startDate + ' 00:00:00') match = false;
+                if (endDate && item.time > endDate + ' 23:59:59') match = false;
+                if (type && item.type !== type) match = false;
+                if (operator && item.operatorType !== operator) match = false;
+                console.log('检查:', item, '匹配:', match);
+                return match;
             });
+            
+            console.log('筛选结果:', filteredPointsData);
             
             pointsPageNum = 1;
             renderPointsTable();
