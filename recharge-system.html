@@ -467,12 +467,6 @@
                         </svg>
                         <span>余额明细</span>
                     </div>
-                    <div id="nav-bills" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="navTo('bills')">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <span>全部账单</span>
-                    </div>
                     <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('权益金明细功能开发中')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -1311,6 +1305,13 @@
             document.getElementById('pointsStartDate').value = formatDate(thirtyDaysAgo);
             document.getElementById('balanceEndDate').value = formatDate(today);
             document.getElementById('balanceStartDate').value = formatDate(thirtyDaysAgo);
+            
+            // 设置打款记录默认日期为近一个月
+            document.getElementById('paymentEndDate').value = formatDate(today);
+            document.getElementById('paymentStartDate').value = formatDate(thirtyDaysAgo);
+            // 设置应付账单默认日期为近一个月
+            document.getElementById('payableEndDate').value = formatDate(today);
+            document.getElementById('payableStartDate').value = formatDate(thirtyDaysAgo);
             
             // 初始化表格
             renderPointsTable();
