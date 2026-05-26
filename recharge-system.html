@@ -1794,6 +1794,22 @@
             document.getElementById('payableEndDate').value = formatDate(today);
             document.getElementById('payableStartDate').value = formatDate(thirtyDaysAgo);
             
+            // 设置权益金明细默认日期为近一个月
+            document.getElementById('equityEndDate').value = formatDate(today);
+            document.getElementById('equityStartDate').value = formatDate(thirtyDaysAgo);
+            
+            // 设置授信单额度明细默认日期为近一个月
+            document.getElementById('creditQuotaEndDate').value = formatDate(today);
+            document.getElementById('creditQuotaStartDate').value = formatDate(thirtyDaysAgo);
+            
+            // 设置授信单账户明细默认日期为近一个月
+            document.getElementById('creditAccountEndDate').value = formatDate(today);
+            document.getElementById('creditAccountStartDate').value = formatDate(thirtyDaysAgo);
+            
+            // 设置授信单账单明细默认日期为近一个月
+            document.getElementById('creditBillsEndDate').value = formatDate(today);
+            document.getElementById('creditBillsStartDate').value = formatDate(thirtyDaysAgo);
+            
             // 初始化表格
             renderPointsTable();
             renderBalanceTable();
