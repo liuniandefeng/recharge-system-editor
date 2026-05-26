@@ -467,6 +467,12 @@
                         </svg>
                         <span>余额明细</span>
                     </div>
+                    <div id="nav-bills" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="navTo('bills')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>全部账单</span>
+                    </div>
                     <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('权益金明细功能开发中')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -618,6 +624,12 @@
                                     </svg>
                                     导出
                                 </button>
+                                <button class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="navTo('bills')">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    查看账单
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -742,6 +754,18 @@
                             <div class="flex gap-2 ml-auto">
                                 <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterBalanceData()">查询</button>
                                 <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetBalanceFilter()">重置</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2" onclick="exportBalanceData()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    导出
+                                </button>
+                                <button class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="navTo('bills')">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    查看账单
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -770,6 +794,253 @@
                         <div class="p-4 border-t flex items-center justify-between">
                             <span class="text-sm text-gray-500">共 <span id="balanceTotal">16</span> 条记录</span>
                             <div class="flex gap-1" id="balancePagination"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 页面3：全部账单 -->
+                <div id="page-bills" class="page-section">
+                    <!-- 页面标题 -->
+                    <div class="bg-white p-6 mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">全部账单</h2>
+                        <p class="text-sm text-gray-500 mt-1">展示您所有门店的账单信息</p>
+                    </div>
+
+                    <!-- Tab切换 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item active" onclick="switchBillsTab('payable')" id="tab-payable">应付账单</div>
+                            <div class="tab-item" onclick="switchBillsTab('payment')" id="tab-payment">打款记录</div>
+                        </div>
+                    </div>
+
+                    <!-- 应付账单内容 -->
+                    <div id="bills-payable" class="bg-white rounded-b-lg">
+                        <!-- 搜索栏 -->
+                        <div class="p-5 border-b">
+                            <div class="flex items-end gap-4 flex-wrap">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">应付单号</label>
+                                    <input type="text" id="payableOrderInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入应付单号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">账单状态</label>
+                                    <select id="payableStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-40">
+                                        <option value="">全部</option>
+                                        <option value="未结算">未结算</option>
+                                        <option value="结算中">结算中</option>
+                                        <option value="已结算">已结算</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="date" id="payableStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <span class="text-gray-400">至</span>
+                                        <input type="date" id="payableEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterPayableData()">查询</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetPayableFilter()">重置</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        导出
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 汇总数据 -->
+                        <div class="p-5 border-b bg-gray-50 grid grid-cols-4 gap-6">
+                            <div>
+                                <div class="text-sm text-gray-500">账单金额(元)</div>
+                                <div class="text-xl font-semibold text-gray-900 mt-1" id="payableTotalAmount">20,000.00</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">已付金额(元)</div>
+                                <div class="text-xl font-semibold text-gray-900 mt-1" id="payablePaidAmount">2,000.00</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">退款金额(元)</div>
+                                <div class="text-xl font-semibold text-gray-900 mt-1" id="payableRefundAmount">1,000.00</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">待付金额(元)</div>
+                                <div class="text-xl font-semibold text-red-500 mt-1" id="payablePendingAmount">16,000.00</div>
+                            </div>
+                        </div>
+
+                        <!-- 表格 -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>应付单号</th>
+                                        <th>账单状态</th>
+                                        <th>账单金额(元)</th>
+                                        <th>已付金额(元)</th>
+                                        <th>退款金额(元)</th>
+                                        <th>待付金额(元)</th>
+                                        <th>创建时间</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="payableTableBody">
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPayableDetail('YS2025122565029')">YS2025122565029</td>
+                                        <td><span class="status-tag status-pending">未结算</span></td>
+                                        <td>10,000.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td class="text-red-500">10,000.00</td>
+                                        <td>2025-12-25 17:05:36</td>
+                                        <td class="text-gray-500 text-sm">昆明海伟宏亦汽车销售有限公司, 积分额度充值</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPayableDetail('YS2025122550839')">YS2025122550839</td>
+                                        <td><span class="status-tag status-pending">未结算</span></td>
+                                        <td>5,000.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td class="text-red-500">5,000.00</td>
+                                        <td>2025-12-25 16:58:59</td>
+                                        <td class="text-gray-500 text-sm">合肥新孚美变速箱技术服务有限公司, 批量额度充值</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPayableDetail('YS2025122550839-2')">YS2025122550839</td>
+                                        <td><span class="status-tag status-approved">结算中</span></td>
+                                        <td>2,000.00</td>
+                                        <td>0.00</td>
+                                        <td>1,000.00</td>
+                                        <td class="text-red-500">1,000.00</td>
+                                        <td>2025-12-25 16:58:59</td>
+                                        <td class="text-gray-500 text-sm">昆明海伟宏亦汽车销售有限公司-109积分授信单发放</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPayableDetail('YS2026050753239')">YS2026050753239</td>
+                                        <td><span class="status-tag status-success">已结算</span></td>
+                                        <td>3,000.00</td>
+                                        <td>2,000.00</td>
+                                        <td>1,000.00</td>
+                                        <td>0.00</td>
+                                        <td>2026-05-09 11:37:36</td>
+                                        <td class="text-gray-500 text-sm">昆明海伟宏亦汽车销售有限公司-109批量授信单发放</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span>4</span> 条记录</span>
+                            <div class="flex gap-1">
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&lt;</button>
+                                <button class="px-3 py-1 rounded bg-blue-500 text-white">1</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">2</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">3</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">4</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">5</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&gt;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 打款记录内容 -->
+                    <div id="bills-payment" class="bg-white rounded-b-lg hidden">
+                        <!-- 搜索栏 -->
+                        <div class="p-5 border-b">
+                            <div class="flex items-end gap-4 flex-wrap">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">交易单号</label>
+                                    <input type="text" id="paymentOrderInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入交易单号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">交易状态</label>
+                                    <select id="paymentStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-40">
+                                        <option value="">全部</option>
+                                        <option value="交易成功">交易成功</option>
+                                        <option value="已退回">已退回</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="date" id="paymentStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <span class="text-gray-400">至</span>
+                                        <input type="date" id="paymentEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterPaymentData()">查询</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetPaymentFilter()">重置</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        导出
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 表格 -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>交易单号</th>
+                                        <th>交易状态</th>
+                                        <th>交易金额(元)</th>
+                                        <th>交易方式</th>
+                                        <th>收款方</th>
+                                        <th>创建时间</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentTableBody">
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPaymentDetail('JY202512250001')">JY202512250001</td>
+                                        <td><span class="status-tag status-success">交易成功</span></td>
+                                        <td class="text-green-500">+10,000.00</td>
+                                        <td>银行转账</td>
+                                        <td>广州易通达供应链管理有限公司</td>
+                                        <td>2025-12-25 17:05:36</td>
+                                        <td class="text-gray-500 text-sm"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPaymentDetail('JY202512250002')">JY202512250002</td>
+                                        <td><span class="status-tag status-success">交易成功</span></td>
+                                        <td class="text-green-500">+5,000.00</td>
+                                        <td>银行转账</td>
+                                        <td>张三责任有限公司</td>
+                                        <td>2025-12-25 16:58:59</td>
+                                        <td class="text-gray-500 text-sm"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline" onclick="showPaymentDetail('JY202512250003')">JY202512250003</td>
+                                        <td><span class="status-tag status-failed">已退回</span></td>
+                                        <td class="text-red-500">-2,000.00</td>
+                                        <td>银行转账</td>
+                                        <td>张三责任有限公司</td>
+                                        <td>2025-12-25 16:58:59</td>
+                                        <td class="text-gray-500 text-sm">退款原因为账户信息错误</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span>3</span> 条记录</span>
+                            <div class="flex gap-1">
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&lt;</button>
+                                <button class="px-3 py-1 rounded bg-blue-500 text-white">1</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">2</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">3</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">4</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">5</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&gt;</button>
+                            </div>
                         </div>
                     </div>
 
@@ -1058,7 +1329,7 @@
             
             // 更新侧边栏高亮
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            if (page === 'points' || page === 'balance') {
+            if (page === 'points' || page === 'balance' || page === 'bills') {
                 document.getElementById('nav-' + page).classList.add('active');
             }
             
@@ -1066,9 +1337,10 @@
             const breadcrumbMap = {
                 'points': '积分明细',
                 'balance': '余额明细',
+                'bills': '全部账单',
                 'detail': '充值记录详情'
             };
-            document.getElementById('breadcrumb-text').textContent = breadcrumbMap[page];
+            document.getElementById('breadcrumb-text').textContent = breadcrumbMap[page] || '积分明细';
             
             // 更新URL hash
             history.replaceState(null, '', '#' + page);
@@ -1471,6 +1743,74 @@
             balancePageNum = 1;
             renderBalanceTable();
             showToast('已重置筛选条件');
+        }
+
+        // ==================== 全部账单页面 ====================
+        let currentBillsTab = 'payable';
+
+        function switchBillsTab(tab) {
+            currentBillsTab = tab;
+            
+            // 更新Tab高亮
+            document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            // 显示/隐藏内容
+            document.getElementById('bills-payable').classList.toggle('hidden', tab !== 'payable');
+            document.getElementById('bills-payment').classList.toggle('hidden', tab !== 'payment');
+        }
+
+        function filterPayableData() {
+            const orderNo = document.getElementById('payableOrderInput').value.trim();
+            const status = document.getElementById('payableStatusFilter').value;
+            const startDate = document.getElementById('payableStartDate').value;
+            const endDate = document.getElementById('payableEndDate').value;
+            
+            showToast('查询应付账单数据...');
+        }
+
+        function resetPayableFilter() {
+            document.getElementById('payableOrderInput').value = '';
+            document.getElementById('payableStatusFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('payableEndDate').value = formatDate(today);
+            document.getElementById('payableStartDate').value = formatDate(thirtyDaysAgo);
+            showToast('已重置筛选条件');
+        }
+
+        function showPayableDetail(orderNo) {
+            showToast('查看应付单详情：' + orderNo);
+        }
+
+        function filterPaymentData() {
+            const orderNo = document.getElementById('paymentOrderInput').value.trim();
+            const status = document.getElementById('paymentStatusFilter').value;
+            const startDate = document.getElementById('paymentStartDate').value;
+            const endDate = document.getElementById('paymentEndDate').value;
+            
+            showToast('查询打款记录数据...');
+        }
+
+        function resetPaymentFilter() {
+            document.getElementById('paymentOrderInput').value = '';
+            document.getElementById('paymentStatusFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('paymentEndDate').value = formatDate(today);
+            document.getElementById('paymentStartDate').value = formatDate(thirtyDaysAgo);
+            showToast('已重置筛选条件');
+        }
+
+        function showPaymentDetail(orderNo) {
+            showToast('查看交易单详情：' + orderNo);
+        }
+
+        function exportBalanceData() {
+            showToast('数据导出中，请稍候...');
+            setTimeout(() => {
+                showToast('余额数据导出成功！');
+            }, 1500);
         }
 
         function exportPointsData() {
