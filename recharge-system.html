@@ -793,8 +793,18 @@
             <div class="p-6">
                 <!-- 商户信息 -->
                 <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                    <div class="text-sm text-gray-500">当前充值门店</div>
-                    <div class="font-medium text-gray-900 mt-1">广东张三有限公司</div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-500">当前充值门店</div>
+                            <div class="font-medium text-gray-900 mt-1" id="currentStoreName">广东张三有限公司</div>
+                        </div>
+                        <button class="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-blue-600 transition-colors" onclick="openStoreSelector()">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            </svg>
+                            切换门店
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- 充值提示 -->
@@ -850,6 +860,60 @@
                 <div class="flex gap-3">
                     <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('rechargeModal')">取消</button>
                     <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="openConfirmModal()">确认充值</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 门店选择弹窗 -->
+    <div class="modal-overlay" id="storeSelectorModal">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">切换门店</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('storeSelectorModal')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="text-sm text-gray-500 mb-4">请选择要充值的门店</div>
+                <div class="space-y-3" id="storeList">
+                    <!-- 门店列表 -->
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="1">
+                        <input type="radio" name="selectedStore" value="广东张三有限公司" class="radio-custom" checked>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">广东张三有限公司</div>
+                            <div class="text-sm text-gray-500 mt-1">当前门店</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="2">
+                        <input type="radio" name="selectedStore" value="深圳李四汽车服务有限公司" class="radio-custom">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">深圳李四汽车服务有限公司</div>
+                            <div class="text-sm text-gray-500 mt-1">可充金额：15,000.00</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="3">
+                        <input type="radio" name="selectedStore" value="广州王五汽车销售有限公司" class="radio-custom">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">广州王五汽车销售有限公司</div>
+                            <div class="text-sm text-gray-500 mt-1">可充金额：12,000.00</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="4">
+                        <input type="radio" name="selectedStore" value="东莞赵六汽车维修中心" class="radio-custom">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">东莞赵六汽车维修中心</div>
+                            <div class="text-sm text-gray-500 mt-1">可充金额：8,000.00</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- 按钮 -->
+                <div class="flex gap-3 mt-6">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('storeSelectorModal')">取消</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="switchStore()">确认切换</button>
                 </div>
             </div>
         </div>
@@ -1049,6 +1113,59 @@
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('active');
+        }
+
+        // 门店数据
+        const storeData = {
+            '广东张三有限公司': { pointsMax: 10000, balanceMax: 8000, pointsBalance: 221.88, balanceBalance: 1.99 },
+            '深圳李四汽车服务有限公司': { pointsMax: 15000, balanceMax: 12000, pointsBalance: 500.00, balanceBalance: 100.00 },
+            '广州王五汽车销售有限公司': { pointsMax: 12000, balanceMax: 10000, pointsBalance: 300.00, balanceBalance: 50.00 },
+            '东莞赵六汽车维修中心': { pointsMax: 8000, balanceMax: 6000, pointsBalance: 150.00, balanceBalance: 20.00 }
+        };
+        let currentStore = '广东张三有限公司';
+
+        // 打开门店选择器
+        function openStoreSelector() {
+            // 设置当前选中的门店
+            document.querySelectorAll('input[name="selectedStore"]').forEach(radio => {
+                radio.checked = (radio.value === currentStore);
+            });
+            document.getElementById('storeSelectorModal').classList.add('active');
+        }
+
+        // 切换门店
+        function switchStore() {
+            const selected = document.querySelector('input[name="selectedStore"]:checked');
+            if (!selected) {
+                showToast('请选择门店');
+                return;
+            }
+            
+            const newStore = selected.value;
+            if (newStore === currentStore) {
+                closeModal('storeSelectorModal');
+                return;
+            }
+            
+            // 更新当前门店
+            currentStore = newStore;
+            const data = storeData[newStore];
+            
+            // 更新充值弹窗显示
+            document.getElementById('currentStoreName').textContent = newStore;
+            document.getElementById('pointsMaxAmount').textContent = data.pointsMax.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchMaxAmount').textContent = data.balanceMax.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('pointsAccountBalance').textContent = data.pointsBalance.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchAccountBalance').textContent = data.balanceBalance.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            
+            // 更新全局变量
+            pointsMaxRechargeValue = data.pointsMax;
+            balanceMaxRechargeValue = data.balanceMax;
+            pointsBalanceValue = data.pointsBalance;
+            balanceAmountValue = data.balanceBalance;
+            
+            closeModal('storeSelectorModal');
+            showToast('已切换到：' + newStore);
         }
 
         function updateAccountInfo() {
