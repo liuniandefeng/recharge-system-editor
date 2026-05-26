@@ -2253,7 +2253,29 @@
             const startDate = document.getElementById('payableStartDate').value;
             const endDate = document.getElementById('payableEndDate').value;
             
-            showToast('查询应付账单数据...');
+            const rows = document.querySelectorAll('#payableTableBody tr');
+            let count = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowOrderNo = cells[0]?.textContent.trim() || '';
+                const rowStatus = cells[1]?.textContent.trim() || '';
+                const rowDate = cells[6]?.textContent.trim() || '';
+                
+                let show = true;
+                
+                if (orderNo && !rowOrderNo.includes(orderNo)) show = false;
+                if (status && !rowStatus.includes(status)) show = false;
+                if (startDate && rowDate < startDate) show = false;
+                if (endDate && rowDate > endDate + ' 23:59:59') show = false;
+                
+                row.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            
+            // 更新记录数
+            document.querySelector('#bills-payable .text-gray-500 span').textContent = count;
+            showToast('筛选完成，共 ' + count + ' 条记录');
         }
 
         function resetPayableFilter() {
@@ -2263,6 +2285,10 @@
             const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             document.getElementById('payableEndDate').value = formatDate(today);
             document.getElementById('payableStartDate').value = formatDate(thirtyDaysAgo);
+            // 恢复所有行显示
+            document.querySelectorAll('#payableTableBody tr').forEach(row => row.style.display = '');
+            const totalCount = document.querySelectorAll('#payableTableBody tr').length;
+            document.querySelector('#bills-payable .text-gray-500 span').textContent = totalCount;
             showToast('已重置筛选条件');
         }
 
@@ -2276,7 +2302,29 @@
             const startDate = document.getElementById('paymentStartDate').value;
             const endDate = document.getElementById('paymentEndDate').value;
             
-            showToast('查询打款记录数据...');
+            const rows = document.querySelectorAll('#paymentTableBody tr');
+            let count = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowOrderNo = cells[0]?.textContent.trim() || '';
+                const rowStatus = cells[1]?.textContent.trim() || '';
+                const rowDate = cells[5]?.textContent.trim() || '';
+                
+                let show = true;
+                
+                if (orderNo && !rowOrderNo.includes(orderNo)) show = false;
+                if (status && !rowStatus.includes(status)) show = false;
+                if (startDate && rowDate < startDate) show = false;
+                if (endDate && rowDate > endDate + ' 23:59:59') show = false;
+                
+                row.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            
+            // 更新记录数
+            document.querySelector('#bills-payment .text-gray-500 span').textContent = count;
+            showToast('筛选完成，共 ' + count + ' 条记录');
         }
 
         function resetPaymentFilter() {
@@ -2286,6 +2334,10 @@
             const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             document.getElementById('paymentEndDate').value = formatDate(today);
             document.getElementById('paymentStartDate').value = formatDate(thirtyDaysAgo);
+            // 恢复所有行显示
+            document.querySelectorAll('#paymentTableBody tr').forEach(row => row.style.display = '');
+            const totalCount = document.querySelectorAll('#paymentTableBody tr').length;
+            document.querySelector('#bills-payment .text-gray-500 span').textContent = totalCount;
             showToast('已重置筛选条件');
         }
 
@@ -2309,7 +2361,31 @@
 
         // ==================== 权益金明细页面 ====================
         function filterEquityData() {
-            showToast('查询权益金数据...');
+            const startDate = document.getElementById('equityStartDate').value;
+            const endDate = document.getElementById('equityEndDate').value;
+            const type = document.getElementById('equityTypeFilter').value;
+            
+            const rows = document.querySelectorAll('#equityTableBody tr');
+            let count = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowType = cells[1]?.textContent.trim() || '';
+                const rowDate = cells[5]?.textContent.trim() || '';
+                
+                let show = true;
+                
+                if (type && !rowType.includes(type)) show = false;
+                if (startDate && rowDate < startDate) show = false;
+                if (endDate && rowDate > endDate + ' 23:59:59') show = false;
+                
+                row.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            
+            // 更新记录数
+            document.querySelector('#page-equity .text-gray-500 span').textContent = count;
+            showToast('筛选完成，共 ' + count + ' 条记录');
         }
 
         function resetEquityFilter() {
@@ -2318,6 +2394,10 @@
             const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             document.getElementById('equityEndDate').value = formatDate(today);
             document.getElementById('equityStartDate').value = formatDate(thirtyDaysAgo);
+            // 恢复所有行显示
+            document.querySelectorAll('#equityTableBody tr').forEach(row => row.style.display = '');
+            const totalCount = document.querySelectorAll('#equityTableBody tr').length;
+            document.querySelector('#page-equity .text-gray-500 span').textContent = totalCount;
             showToast('已重置筛选条件');
         }
 
@@ -2342,7 +2422,34 @@
 
         // 授信单额度明细
         function filterCreditQuotaData() {
-            showToast('查询授信单额度数据...');
+            const orderNo = document.getElementById('creditQuotaOrderInput').value.trim();
+            const status = document.getElementById('creditQuotaStatusFilter').value;
+            const startDate = document.getElementById('creditQuotaStartDate').value;
+            const endDate = document.getElementById('creditQuotaEndDate').value;
+            
+            const rows = document.querySelectorAll('#credit-quota tbody tr');
+            let count = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowOrderNo = cells[0]?.textContent.trim() || '';
+                const rowStatus = cells[9]?.textContent.trim() || '';
+                const rowDate = cells[6]?.textContent.trim() || '';
+                
+                let show = true;
+                
+                if (orderNo && !rowOrderNo.includes(orderNo)) show = false;
+                if (status && !rowStatus.includes(status)) show = false;
+                if (startDate && rowDate < startDate) show = false;
+                if (endDate && rowDate > endDate + ' 23:59:59') show = false;
+                
+                row.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            
+            // 更新记录数
+            document.querySelector('#credit-quota .text-gray-500 span').textContent = count;
+            showToast('筛选完成，共 ' + count + ' 条记录');
         }
 
         function resetCreditQuotaFilter() {
@@ -2352,6 +2459,10 @@
             const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             document.getElementById('creditQuotaEndDate').value = formatDate(today);
             document.getElementById('creditQuotaStartDate').value = formatDate(thirtyDaysAgo);
+            // 恢复所有行显示
+            document.querySelectorAll('#credit-quota tbody tr').forEach(row => row.style.display = '');
+            const totalCount = document.querySelectorAll('#credit-quota tbody tr').length;
+            document.querySelector('#credit-quota .text-gray-500 span').textContent = totalCount;
             showToast('已重置筛选条件');
         }
 
@@ -2364,7 +2475,37 @@
 
         // 授信单账户明细
         function filterCreditAccountData() {
-            showToast('查询授信单账户数据...');
+            const transNo = document.getElementById('creditAccountTransInput').value.trim();
+            const batchNo = document.getElementById('creditAccountBatchInput').value.trim();
+            const type = document.getElementById('creditAccountTypeFilter').value;
+            const startDate = document.getElementById('creditAccountStartDate').value;
+            const endDate = document.getElementById('creditAccountEndDate').value;
+            
+            const rows = document.querySelectorAll('#credit-account tbody tr');
+            let count = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowTransNo = cells[0]?.textContent.trim() || '';
+                const rowBatchNo = cells[2]?.textContent.trim() || '';
+                const rowType = cells[4]?.textContent.trim() || '';
+                const rowDate = cells[3]?.textContent.trim() || '';
+                
+                let show = true;
+                
+                if (transNo && !rowTransNo.includes(transNo)) show = false;
+                if (batchNo && !rowBatchNo.includes(batchNo)) show = false;
+                if (type && !rowType.includes(type)) show = false;
+                if (startDate && rowDate < startDate) show = false;
+                if (endDate && rowDate > endDate + ' 23:59:59') show = false;
+                
+                row.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            
+            // 更新记录数
+            document.querySelector('#credit-account .text-gray-500 span').textContent = count;
+            showToast('筛选完成，共 ' + count + ' 条记录');
         }
 
         function resetCreditAccountFilter() {
@@ -2375,6 +2516,10 @@
             const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             document.getElementById('creditAccountEndDate').value = formatDate(today);
             document.getElementById('creditAccountStartDate').value = formatDate(thirtyDaysAgo);
+            // 恢复所有行显示
+            document.querySelectorAll('#credit-account tbody tr').forEach(row => row.style.display = '');
+            const totalCount = document.querySelectorAll('#credit-account tbody tr').length;
+            document.querySelector('#credit-account .text-gray-500 span').textContent = totalCount;
             showToast('已重置筛选条件');
         }
 
@@ -2387,7 +2532,34 @@
 
         // 授信单账单明细
         function filterCreditBillsData() {
-            showToast('查询授信单账单数据...');
+            const orderNo = document.getElementById('creditBillsOrderInput').value.trim();
+            const status = document.getElementById('creditBillsStatusFilter').value;
+            const startDate = document.getElementById('creditBillsStartDate').value;
+            const endDate = document.getElementById('creditBillsEndDate').value;
+            
+            const rows = document.querySelectorAll('#credit-bills tbody tr');
+            let count = 0;
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowOrderNo = cells[0]?.textContent.trim() || '';
+                const rowStatus = cells[5]?.textContent.trim() || '';
+                const rowDate = cells[6]?.textContent.trim() || '';
+                
+                let show = true;
+                
+                if (orderNo && !rowOrderNo.includes(orderNo)) show = false;
+                if (status && !rowStatus.includes(status)) show = false;
+                if (startDate && rowDate < startDate) show = false;
+                if (endDate && rowDate > endDate + ' 23:59:59') show = false;
+                
+                row.style.display = show ? '' : 'none';
+                if (show) count++;
+            });
+            
+            // 更新记录数
+            document.querySelector('#credit-bills .text-gray-500 span').textContent = count;
+            showToast('筛选完成，共 ' + count + ' 条记录');
         }
 
         function resetCreditBillsFilter() {
@@ -2397,6 +2569,10 @@
             const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             document.getElementById('creditBillsEndDate').value = formatDate(today);
             document.getElementById('creditBillsStartDate').value = formatDate(thirtyDaysAgo);
+            // 恢复所有行显示
+            document.querySelectorAll('#credit-bills tbody tr').forEach(row => row.style.display = '');
+            const totalCount = document.querySelectorAll('#credit-bills tbody tr').length;
+            document.querySelector('#credit-bills .text-gray-500 span').textContent = totalCount;
             showToast('已重置筛选条件');
         }
 
