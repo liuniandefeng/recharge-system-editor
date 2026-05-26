@@ -467,13 +467,13 @@
                         </svg>
                         <span>余额明细</span>
                     </div>
-                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('权益金明细功能开发中')">
+                    <div id="nav-equity" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="navTo('equity')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span>权益金明细</span>
                     </div>
-                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('授信单明细功能开发中')">
+                    <div id="nav-credit" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="navTo('credit')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -1040,6 +1040,526 @@
 
                 </div>
 
+                <!-- 页面4：权益金明细 -->
+                <div id="page-equity" class="page-section">
+                    <!-- 页面标题 -->
+                    <div class="bg-white p-6 mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">权益金明细</h2>
+                        <p class="text-sm text-gray-500 mt-1">查看权益金账户的额度明细</p>
+                    </div>
+
+                    <!-- Tab切换 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item active" onclick="switchEquityTab('quota')">授信单额度明细</div>
+                        </div>
+                    </div>
+
+                    <!-- 授信单额度明细内容 -->
+                    <div id="equity-quota" class="bg-white rounded-b-lg">
+                        <!-- 汇总数据 -->
+                        <div class="p-5 border-b bg-gray-50 grid grid-cols-2 gap-6">
+                            <div>
+                                <div class="text-sm text-gray-500">总可用额度(元)</div>
+                                <div class="text-xl font-semibold text-blue-600 mt-1">100.00</div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="refreshEquityData()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                    刷新
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="p-5 border-b">
+                            <div class="flex items-end gap-4 flex-wrap">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">授信单号</label>
+                                    <input type="text" id="equityOrderInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入授信单号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">授信状态</label>
+                                    <select id="equityStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <option value="">全部</option>
+                                        <option value="生效中">生效中</option>
+                                        <option value="已失效">已失效</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="date" id="equityStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <span class="text-gray-400">至</span>
+                                        <input type="date" id="equityEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterEquityData()">查询</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetEquityFilter()">重置</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        导出
+                                    </button>
+                                    <button class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="navTo('bills')">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        查看账单
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 表格 -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>授信单号</th>
+                                        <th>授信单类型</th>
+                                        <th>授信额度(元)</th>
+                                        <th>已使用额度(元)</th>
+                                        <th>作废额度(元)</th>
+                                        <th>失效额度(元)</th>
+                                        <th>剩余额度(元)</th>
+                                        <th>创建时间</th>
+                                        <th>失效时间</th>
+                                        <th>授信状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="equityQuotaTableBody">
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRP2026050772456</td>
+                                        <td>积分类型授信单</td>
+                                        <td>100.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td class="text-green-600">100.00</td>
+                                        <td>2026-05-07 15:26:42</td>
+                                        <td>2026-06-05 23:59:59</td>
+                                        <td><span class="status-tag status-success">生效中</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRP2026010485843</td>
+                                        <td>积分类型授信单</td>
+                                        <td>10.00</td>
+                                        <td>1.04</td>
+                                        <td>4.96</td>
+                                        <td>4.00</td>
+                                        <td class="text-gray-400">0.00</td>
+                                        <td>2026-01-04 14:55:37</td>
+                                        <td>2026-02-02 23:59:59</td>
+                                        <td><span class="status-tag status-pending">已失效</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRP2025123011466</td>
+                                        <td>积分类型授信单</td>
+                                        <td>100.00</td>
+                                        <td>1.56</td>
+                                        <td>98.44</td>
+                                        <td>0.00</td>
+                                        <td class="text-gray-400">0.00</td>
+                                        <td>2025-12-30 11:27:29</td>
+                                        <td>2026-01-28 23:59:59</td>
+                                        <td><span class="status-tag status-pending">已失效</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRM20250003</td>
+                                        <td>积分类型授信单</td>
+                                        <td>10.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>10.00</td>
+                                        <td class="text-gray-400">0.00</td>
+                                        <td>2021-11-05 00:00:00</td>
+                                        <td>2021-11-05 23:59:59</td>
+                                        <td><span class="status-tag status-pending">已失效</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span>4</span> 条记录</span>
+                            <div class="flex gap-1">
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&lt;</button>
+                                <button class="px-3 py-1 rounded bg-blue-500 text-white">1</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">&gt;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页面5：授信单明细 -->
+                <div id="page-credit" class="page-section">
+                    <!-- 页面标题 -->
+                    <div class="bg-white p-6 mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">授信单明细</h2>
+                        <p class="text-sm text-gray-500 mt-1">查看授信单的额度明细、账户明细和账单明细</p>
+                    </div>
+
+                    <!-- Tab切换 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item active" onclick="switchCreditTab('quota')" id="credit-tab-quota">授信单额度明细</div>
+                            <div class="tab-item" onclick="switchCreditTab('account')" id="credit-tab-account">授信单账户明细</div>
+                            <div class="tab-item" onclick="switchCreditTab('bills')" id="credit-tab-bills">账单明细</div>
+                        </div>
+                    </div>
+
+                    <!-- Tab1: 授信单额度明细 -->
+                    <div id="credit-quota" class="bg-white rounded-b-lg">
+                        <!-- 汇总数据 -->
+                        <div class="p-5 border-b bg-gray-50 grid grid-cols-2 gap-6">
+                            <div>
+                                <div class="text-sm text-gray-500">总可用额度(元)</div>
+                                <div class="text-xl font-semibold text-blue-600 mt-1">100.00</div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="refreshCreditQuotaData()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                    刷新
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="p-5 border-b">
+                            <div class="flex items-end gap-4 flex-wrap">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">授信单号</label>
+                                    <input type="text" id="creditQuotaOrderInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入授信单号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">授信状态</label>
+                                    <select id="creditQuotaStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <option value="">全部</option>
+                                        <option value="生效中">生效中</option>
+                                        <option value="已失效">已失效</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="date" id="creditQuotaStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <span class="text-gray-400">至</span>
+                                        <input type="date" id="creditQuotaEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterCreditQuotaData()">查询</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetCreditQuotaFilter()">重置</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        导出
+                                    </button>
+                                    <button class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="navTo('bills')">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        查看账单
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 表格 -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>授信单号</th>
+                                        <th>授信单类型</th>
+                                        <th>授信额度(元)</th>
+                                        <th>已使用额度(元)</th>
+                                        <th>作废额度(元)</th>
+                                        <th>失效额度(元)</th>
+                                        <th>剩余额度(元)</th>
+                                        <th>创建时间</th>
+                                        <th>失效时间</th>
+                                        <th>授信状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRP2026050772456</td>
+                                        <td>积分类型授信单</td>
+                                        <td>100.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td class="text-green-600">100.00</td>
+                                        <td>2026-05-07 15:26:42</td>
+                                        <td>2026-06-05 23:59:59</td>
+                                        <td><span class="status-tag status-success">生效中</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRP2026010485843</td>
+                                        <td>积分类型授信单</td>
+                                        <td>10.00</td>
+                                        <td>1.04</td>
+                                        <td>4.96</td>
+                                        <td>4.00</td>
+                                        <td class="text-gray-400">0.00</td>
+                                        <td>2026-01-04 14:55:37</td>
+                                        <td>2026-02-02 23:59:59</td>
+                                        <td><span class="status-tag status-pending">已失效</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span>2</span> 条记录</span>
+                            <div class="flex gap-1">
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&lt;</button>
+                                <button class="px-3 py-1 rounded bg-blue-500 text-white">1</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">&gt;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab2: 授信单账户明细 -->
+                    <div id="credit-account" class="bg-white rounded-b-lg hidden">
+                        <!-- 汇总数据 -->
+                        <div class="p-5 border-b bg-gray-50 grid grid-cols-2 gap-6">
+                            <div>
+                                <div class="text-sm text-gray-500">总可用额度(元)</div>
+                                <div class="text-xl font-semibold text-blue-600 mt-1">100.00</div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="refreshCreditAccountData()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                    刷新
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="p-5 border-b">
+                            <div class="flex items-end gap-4 flex-wrap">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">交易流水单号</label>
+                                    <input type="text" id="creditAccountTransInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入交易流水单号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">上账批次号</label>
+                                    <input type="text" id="creditAccountBatchInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入上账批次号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">流水类型</label>
+                                    <select id="creditAccountTypeFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-40">
+                                        <option value="">全部</option>
+                                        <option value="添加积分授信单">添加积分授信单</option>
+                                        <option value="积分使用">积分使用</option>
+                                        <option value="积分作废">积分作废</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="date" id="creditAccountStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <span class="text-gray-400">至</span>
+                                        <input type="date" id="creditAccountEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterCreditAccountData()">查询</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetCreditAccountFilter()">重置</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        导出
+                                    </button>
+                                    <button class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="navTo('bills')">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        查看账单
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 表格 -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>交易流水单号</th>
+                                        <th>授信单号</th>
+                                        <th>上账批次号</th>
+                                        <th>交易时间</th>
+                                        <th>流水类型</th>
+                                        <th>交易前金额(元)</th>
+                                        <th>交易总金额(元)</th>
+                                        <th>交易手续费(元)</th>
+                                        <th>交易后金额(元)</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">CRA26050715274994772210</td>
+                                        <td>CRP2026050772456</td>
+                                        <td>-</td>
+                                        <td>2026-05-07 15:27:49</td>
+                                        <td>添加积分授信单</td>
+                                        <td>0.00</td>
+                                        <td class="text-green-600">100.00</td>
+                                        <td>0.00</td>
+                                        <td class="text-green-600">100.00</td>
+                                        <td class="text-gray-500 text-sm">添加积分授信单</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span>1</span> 条记录</span>
+                            <div class="flex gap-1">
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&lt;</button>
+                                <button class="px-3 py-1 rounded bg-blue-500 text-white">1</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">&gt;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab3: 账单明细 -->
+                    <div id="credit-bills" class="bg-white rounded-b-lg hidden">
+                        <!-- 汇总数据 -->
+                        <div class="p-5 border-b bg-gray-50 grid grid-cols-4 gap-6">
+                            <div>
+                                <div class="text-sm text-gray-500">应付金额(元)</div>
+                                <div class="text-xl font-semibold text-blue-600 mt-1">2.60</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">已还款金额(元)</div>
+                                <div class="text-xl font-semibold text-green-600 mt-1">2.60</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">退款金额(元)</div>
+                                <div class="text-xl font-semibold text-gray-600 mt-1">0.00</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">待还款金额(元)</div>
+                                <div class="text-xl font-semibold text-red-500 mt-1">0.00</div>
+                            </div>
+                        </div>
+
+                        <!-- 搜索栏 -->
+                        <div class="p-5 border-b">
+                            <div class="flex items-end gap-4 flex-wrap">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">应付单号</label>
+                                    <input type="text" id="creditBillsOrderInput" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48" placeholder="请输入应付单号">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">账单状态</label>
+                                    <select id="creditBillsStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <option value="">全部</option>
+                                        <option value="已结算">已结算</option>
+                                        <option value="未结算">未结算</option>
+                                        <option value="结算中">结算中</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="date" id="creditBillsStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                        <span class="text-gray-400">至</span>
+                                        <input type="date" id="creditBillsEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-auto">
+                                    <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterCreditBillsData()">查询</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetCreditBillsFilter()">重置</button>
+                                    <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                        导出
+                                    </button>
+                                    <button class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2" onclick="navTo('bills')">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        查看账单
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 表格 -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>应付单号</th>
+                                        <th>应付金额(元)</th>
+                                        <th>已还款金额(元)</th>
+                                        <th>退款金额(元)</th>
+                                        <th>待还款金额(元)</th>
+                                        <th>账单状态</th>
+                                        <th>创建时间</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">YS2026010451216</td>
+                                        <td>1.04</td>
+                                        <td class="text-green-600">1.04</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td><span class="status-tag status-success">已结算</span></td>
+                                        <td>2025-01-04 10:57:06</td>
+                                        <td class="text-gray-500 text-sm">壹直购积分券授信单发放批次号: SP260104105651953447</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">YS2025123098714</td>
+                                        <td>1.04</td>
+                                        <td class="text-green-600">1.04</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td><span class="status-tag status-success">已结算</span></td>
+                                        <td>2025-12-30 11:27:56</td>
+                                        <td class="text-gray-500 text-sm">壹直购积分券授信单发放批次号: SP25399</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-blue-600 cursor-pointer hover:underline">YS2025123098710</td>
+                                        <td>0.52</td>
+                                        <td class="text-green-600">0.52</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td><span class="status-tag status-success">已结算</span></td>
+                                        <td>2025-12-30 11:27:52</td>
+                                        <td class="text-gray-500 text-sm">壹直购积分券授信单发放批次号: SP251230112657482053</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span>3</span> 条记录</span>
+                            <div class="flex gap-1">
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&lt;</button>
+                                <button class="px-3 py-1 rounded bg-blue-500 text-white">1</button>
+                                <button class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50">&gt;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -1330,7 +1850,7 @@
             
             // 更新侧边栏高亮
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            if (page === 'points' || page === 'balance' || page === 'bills') {
+            if (['points', 'balance', 'bills', 'equity', 'credit'].includes(page)) {
                 document.getElementById('nav-' + page).classList.add('active');
             }
             
@@ -1339,6 +1859,8 @@
                 'points': '积分明细',
                 'balance': '余额明细',
                 'bills': '全部账单',
+                'equity': '权益金明细',
+                'credit': '授信单明细',
                 'detail': '充值记录详情'
             };
             document.getElementById('breadcrumb-text').textContent = breadcrumbMap[page] || '积分明细';
@@ -1819,6 +2341,107 @@
             setTimeout(() => {
                 showToast('导出成功！文件已下载');
             }, 1500);
+        }
+
+        // ==================== 权益金明细页面 ====================
+        function switchEquityTab(tab) {
+            // 更新Tab高亮
+            document.querySelectorAll('#page-equity .tab-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            showToast('切换到：' + tab);
+        }
+
+        function filterEquityData() {
+            showToast('查询权益金数据...');
+        }
+
+        function resetEquityFilter() {
+            document.getElementById('equityOrderInput').value = '';
+            document.getElementById('equityStatusFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('equityEndDate').value = formatDate(today);
+            document.getElementById('equityStartDate').value = formatDate(thirtyDaysAgo);
+            showToast('已重置筛选条件');
+        }
+
+        function refreshEquityData() {
+            showToast('数据刷新中...');
+            setTimeout(() => {
+                showToast('数据已刷新！');
+            }, 1000);
+        }
+
+        // ==================== 授信单明细页面 ====================
+        function switchCreditTab(tab) {
+            // 更新Tab高亮
+            document.querySelectorAll('#page-credit .tab-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('credit-tab-' + tab).classList.add('active');
+            
+            // 显示/隐藏内容
+            document.getElementById('credit-quota').classList.toggle('hidden', tab !== 'quota');
+            document.getElementById('credit-account').classList.toggle('hidden', tab !== 'account');
+            document.getElementById('credit-bills').classList.toggle('hidden', tab !== 'bills');
+        }
+
+        // 授信单额度明细
+        function filterCreditQuotaData() {
+            showToast('查询授信单额度数据...');
+        }
+
+        function resetCreditQuotaFilter() {
+            document.getElementById('creditQuotaOrderInput').value = '';
+            document.getElementById('creditQuotaStatusFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('creditQuotaEndDate').value = formatDate(today);
+            document.getElementById('creditQuotaStartDate').value = formatDate(thirtyDaysAgo);
+            showToast('已重置筛选条件');
+        }
+
+        function refreshCreditQuotaData() {
+            showToast('授信单额度数据刷新中...');
+            setTimeout(() => {
+                showToast('数据已刷新！');
+            }, 1000);
+        }
+
+        // 授信单账户明细
+        function filterCreditAccountData() {
+            showToast('查询授信单账户数据...');
+        }
+
+        function resetCreditAccountFilter() {
+            document.getElementById('creditAccountTransInput').value = '';
+            document.getElementById('creditAccountBatchInput').value = '';
+            document.getElementById('creditAccountTypeFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('creditAccountEndDate').value = formatDate(today);
+            document.getElementById('creditAccountStartDate').value = formatDate(thirtyDaysAgo);
+            showToast('已重置筛选条件');
+        }
+
+        function refreshCreditAccountData() {
+            showToast('授信单账户数据刷新中...');
+            setTimeout(() => {
+                showToast('数据已刷新！');
+            }, 1000);
+        }
+
+        // 授信单账单明细
+        function filterCreditBillsData() {
+            showToast('查询授信单账单数据...');
+        }
+
+        function resetCreditBillsFilter() {
+            document.getElementById('creditBillsOrderInput').value = '';
+            document.getElementById('creditBillsStatusFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('creditBillsEndDate').value = formatDate(today);
+            document.getElementById('creditBillsStartDate').value = formatDate(thirtyDaysAgo);
+            showToast('已重置筛选条件');
         }
 
         // ==================== 刷新功能 ====================
