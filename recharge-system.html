@@ -550,7 +550,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div class="text-3xl font-bold text-gray-900" id="pointsBalance">221.88</div>
+                            <div class="text-3xl font-bold text-blue-600" id="pointsBalance">221.88</div>
                             <div class="text-sm text-gray-500 mt-1">总可用额度(积分)</div>
                         </div>
                         
@@ -684,7 +684,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div class="text-3xl font-bold text-gray-900" id="balanceAmount">1.99</div>
+                            <div class="text-3xl font-bold text-blue-600" id="balanceAmount">1.99</div>
                             <div class="text-sm text-gray-500 mt-1">总可用额度(元)</div>
                         </div>
                         
@@ -1057,11 +1057,10 @@
                                     <div class="text-gray-400 text-sm mt-1">总可用额度(元)</div>
                                 </div>
                             </div>
-                            <button class="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 transition-colors" onclick="refreshEquityData()">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="refreshEquityData()">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
-                                刷新
                             </button>
                         </div>
                     </div>
@@ -1158,12 +1157,6 @@
 
                 <!-- 页面5：授信单明细 -->
                 <div id="page-credit" class="page-section">
-                    <!-- 页面标题 -->
-                    <div class="bg-white p-6 mb-4">
-                        <h2 class="text-xl font-semibold text-gray-900">全部授信单</h2>
-                        <p class="text-sm text-gray-500 mt-1">查看授信单的额度明细、账户明细和账单明细</p>
-                    </div>
-
                     <!-- 账户概览 - 壹直购积分和批量额度 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="bg-white rounded-xl p-6 flex items-center justify-between">
@@ -1180,11 +1173,10 @@
                                 <div class="text-4xl font-bold text-blue-600">0.00</div>
                                 <div class="text-gray-400 text-sm mt-1">总可用额度(元)</div>
                             </div>
-                            <button class="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 transition-colors" onclick="refreshCreditQuotaData()">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="refreshCreditQuotaData()">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
-                                刷新
                             </button>
                         </div>
                     </div>
