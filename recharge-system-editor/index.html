@@ -2174,20 +2174,22 @@
             const type = document.getElementById('pointsTypeFilter').value;
             const operator = document.getElementById('pointsOperatorFilter').value;
             
-            console.log('筛选条件:', { startDate, endDate, type, operator });
-            console.log('原始数据:', allPointsData);
-            
             filteredPointsData = allPointsData.filter(item => {
-                let match = true;
-                if (startDate && item.time < startDate + ' 00:00:00') match = false;
-                if (endDate && item.time > endDate + ' 23:59:59') match = false;
-                if (type && item.type !== type) match = false;
-                if (operator && item.operatorType !== operator) match = false;
-                console.log('检查:', item, '匹配:', match);
-                return match;
+                // 类型筛选
+                if (type && item.type !== type) return false;
+                // 操作人筛选
+                if (operator && item.operatorType !== operator) return false;
+                // 日期筛选 - 只比较日期部分
+                if (startDate) {
+                    const itemDate = item.time.split(' ')[0];
+                    if (itemDate < startDate) return false;
+                }
+                if (endDate) {
+                    const itemDate = item.time.split(' ')[0];
+                    if (itemDate > endDate) return false;
+                }
+                return true;
             });
-            
-            console.log('筛选结果:', filteredPointsData);
             
             pointsPageNum = 1;
             renderPointsTable();
@@ -2201,10 +2203,19 @@
             const operator = document.getElementById('balanceOperatorFilter').value;
             
             filteredBalanceData = balanceData.filter(item => {
-                if (startDate && item.time < startDate + ' 00:00:00') return false;
-                if (endDate && item.time > endDate + ' 23:59:59') return false;
+                // 类型筛选
                 if (type && item.type !== type) return false;
+                // 操作人筛选
                 if (operator && item.operatorType !== operator) return false;
+                // 日期筛选 - 只比较日期部分
+                if (startDate) {
+                    const itemDate = item.time.split(' ')[0];
+                    if (itemDate < startDate) return false;
+                }
+                if (endDate) {
+                    const itemDate = item.time.split(' ')[0];
+                    if (itemDate > endDate) return false;
+                }
                 return true;
             });
             
