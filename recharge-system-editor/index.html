@@ -9,624 +9,429 @@
     <style>
         * {
             font-family: 'Noto Sans SC', sans-serif;
-            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --sidebar: #1e293b;
+            --bg: #f1f5f9;
         }
         
         body {
-            margin: 0;
-            padding: 0;
+            background-color: var(--bg);
         }
         
-        /* 登录页面背景 - 蓝色城市模糊背景 */
-        .login-bg {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 50%, #2E6BA8 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* 城市剪影背景 */
-        .login-bg::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 600"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%234A90E2"/><stop offset="50%" style="stop-color:%235FA8E8"/><stop offset="100%" style="stop-color:%2378C0EE"/></linearGradient></defs><rect fill="url(%23sky)" width="1440" height="600"/><g fill="%23ffffff" opacity="0.15"><rect x="100" y="300" width="80" height="300"/><rect x="200" y="250" width="60" height="350"/><rect x="280" y="350" width="100" height="250"/><rect x="400" y="200" width="70" height="400"/><rect x="480" y="280" width="90" height="320"/><rect x="600" y="320" width="80" height="280"/><rect x="700" y="180" width="120" height="420"/><rect x="840" y="300" width="70" height="300"/><rect x="920" y="260" width="100" height="340"/><rect x="1040" y="340" width="80" height="260"/><rect x="1140" y="220" width="110" height="380"/><rect x="1280" y="290" width="90" height="310"/></g></svg>') no-repeat bottom;
-            background-size: cover;
-            filter: blur(3px);
-        }
-        
-        /* 登录卡片样式 */
-        .login-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            width: 360px;
-            padding: 30px;
-        }
-        
-        /* Tab样式 */
-        .tab-btn {
-            flex: 1;
-            padding: 12px 0;
-            text-align: center;
-            color: #666;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-        .tab-btn.active {
-            color: #1890ff;
-            border-bottom-color: #1890ff;
-        }
-        
-        /* 输入框样式 */
-        .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: all 0.3s;
-            background: #fafafa;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #1890ff;
-            background: white;
-        }
-        .input-field::placeholder {
-            color: #bfbfbf;
-        }
-        
-        /* 主按钮 */
-        .btn-primary {
-            background: #1890ff;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-weight: 500;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-        }
-        .btn-primary:hover {
-            background: #40a9ff;
-        }
-        
-        /* 手机模型 */
-        .phone-mockup {
-            width: 200px;
-            height: 400px;
-            background: #1a1a1a;
-            border-radius: 30px;
-            padding: 10px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .phone-screen {
-            width: 100%;
-            height: 100%;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        /* 功能列表样式 */
-        .feature-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            color: white;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-        .feature-item::before {
-            content: '•';
-            margin-right: 8px;
-            color: #fff;
-        }
-        
-        /* 二维码样式 */
-        .qr-box {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-        }
-        
-        /* 侧边栏 */
+        /* 侧边栏样式 */
         .sidebar {
-            background: #001529;
-            width: 200px;
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
+            background-color: var(--sidebar);
+            transition: all 0.3s ease;
         }
         
-        /* 首页样式 */
-        .home-content {
-            margin-left: 200px;
-            background: #f0f2f5;
-            min-height: 100vh;
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-item.active {
+            background-color: var(--primary);
         }
         
         /* 卡片样式 */
-        .module-card {
+        .card {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: box-shadow 0.3s;
-        }
-        .module-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
         }
         
-        /* 待办卡片 */
-        .todo-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* 按钮样式 */
+        .btn-primary {
+            background-color: var(--primary);
             color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .todo-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-        .todo-card .count {
-            font-size: 32px;
-            font-weight: 700;
+            transition: all 0.2s ease;
         }
         
-        /* 数据统计卡片 */
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #1890ff;
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
         }
-        .stat-card .value {
-            font-size: 24px;
+        
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .data-table th {
+            background-color: #f8fafc;
             font-weight: 600;
-            color: #333;
-        }
-        .stat-card .label {
-            font-size: 14px;
-            color: #999;
-            margin-top: 4px;
-        }
-        .stat-card .trend {
-            font-size: 12px;
-            color: #52c41a;
-            margin-top: 8px;
+            color: #475569;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
         }
         
-        /* 公告列表 */
-        .announcement-item {
-            padding: 16px 0;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .announcement-item:hover {
-            background: #fafafa;
-        }
-        .announcement-item:last-child {
-            border-bottom: none;
-        }
-        .announcement-item .title {
-            color: #333;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        .announcement-item .time {
-            color: #999;
-            font-size: 12px;
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
         }
         
-        /* FAQ手风琴 */
-        .faq-item {
-            border-bottom: 1px solid #f0f0f0;
+        .data-table tr:hover td {
+            background-color: #f8fafc;
         }
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-        .faq-question {
-            padding: 16px 0;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
+        
+        /* 状态标签 */
+        .status-tag {
+            display: inline-flex;
             align-items: center;
-            color: #333;
-            font-size: 14px;
-        }
-        .faq-question:hover {
-            color: #1890ff;
-        }
-        .faq-answer {
-            display: none;
-            padding: 0 0 16px 0;
-            color: #666;
-            font-size: 14px;
-            line-height: 1.8;
-        }
-        .faq-item.active .faq-answer {
-            display: block;
-        }
-        .faq-item.active .faq-icon {
-            transform: rotate(180deg);
-        }
-        .faq-icon {
-            transition: transform 0.3s;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
         }
         
-        /* 平台服务卡片 */
-        .service-card {
-            background: #fafbfc;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .service-card .icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
-            border-radius: 50%;
-            display: flex;
+        .status-pending { background: #fff7ed; color: #ea580c; }
+        .status-approved { background: #eff6ff; color: #2563eb; }
+        .status-success { background: #f0fdf4; color: #16a34a; }
+        .status-failed { background: #fef2f2; color: #dc2626; }
+        .status-cancelled { background: #f8fafc; color: #64748b; }
+        
+        /* 操作人标签 */
+        .operator-tag {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
         }
         
-        /* 公告弹窗 */
+        .operator-self { background: #eff6ff; color: #2563eb; }
+        .operator-platform { background: #f3e8ff; color: #9333ea; }
+        .operator-system { background: #f1f5f9; color: #64748b; }
+        
+        /* 金额颜色 */
+        .amount-income { color: #16a34a; }
+        .amount-expense { color: #dc2626; }
+        
+        /* 弹窗动画 */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
+        
         .modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
+        
         .modal-content {
             background: white;
-            border-radius: 12px;
-            width: 800px;
-            max-width: 90vw;
-            max-height: 80vh;
-            overflow: hidden;
-            transform: scale(0.9);
-            transition: transform 0.3s;
-        }
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-header .title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        .modal-header .page-num {
-            font-size: 12px;
-            color: #999;
-        }
-        .modal-body {
-            padding: 24px;
-            max-height: 400px;
+            border-radius: 16px;
+            max-width: 520px;
+            width: 90%;
+            max-height: 90vh;
             overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
         }
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-skip {
-            background: #f5f5f5;
-            color: #666;
-            padding: 10px 24px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-skip:hover {
-            background: #eee;
-        }
-        .btn-action {
-            background: #1890ff;
-            color: white;
-            padding: 10px 32px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            min-width: 100px;
-        }
-        .btn-action:hover {
-            background: #40a9ff;
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
         }
         
         /* Toast通知 */
-        .toast {
+        .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: white;
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            z-index: 10000;
-            transform: translateX(120%);
-            transition: transform 0.4s;
+            z-index: 9999;
         }
+        
+        .toast {
+            background: white;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
         .toast.show {
             transform: translateX(0);
         }
         
-        /* 验证码样式 */
-        .code-box {
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            border-radius: 4px;
-            padding: 8px 16px;
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            letter-spacing: 4px;
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: #1e293b;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            max-width: 320px;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #1e293b;
+        }
+        
+        .tooltip.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+        
+        .timeline-dot.completed {
+            background: #16a34a;
+        }
+        
+        .timeline-dot.processing {
+            background: #2563eb;
+            animation: pulse 2s infinite;
+        }
+        
+        .timeline-dot.pending {
+            background: #cbd5e1;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+        }
+        
+        /* 刷新动画 */
+        .refresh-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 页签样式 */
+        .tab-item {
+            padding: 12px 20px;
+            color: #64748b;
             cursor: pointer;
-            user-select: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-item:hover {
+            color: #2563eb;
+        }
+        
+        .tab-item.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            font-weight: 500;
+        }
+        
+        /* 渐变卡片 */
+        .gradient-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        /* 分页 */
+        .pagination-btn {
+            padding: 8px 14px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        
+        .pagination-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* 页面切换 */
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 下拉菜单 */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        /* 单选按钮自定义样式 */
+        .radio-custom {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .radio-custom:checked {
+            border-color: #2563eb;
+        }
+        
+        .radio-custom:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #2563eb;
+            border-radius: 50%;
+        }
+        
+        /* 输入框聚焦 */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
     </style>
 </head>
-<body>
-    <!-- ==================== 登录页面 ==================== -->
-    <div id="loginPage" class="login-bg">
-        <div class="relative z-10 min-h-screen flex items-center justify-center px-8 py-12">
-            <div class="flex items-center justify-center gap-16 max-w-6xl w-full">
-                <!-- 左侧手机展示 -->
-                <div class="hidden lg:block">
-                    <div class="phone-mockup">
-                        <div class="phone-screen">
-                            <!-- 模拟APP界面 -->
-                            <div style="padding: 16px; background: #f5f5f5; height: 100%;">
-                                <div style="background: white; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                                    <div style="font-size: 12px; color: #666; margin-bottom: 8px;">绿能续航 一路无忧</div>
-                                    <div style="height: 80px; background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
-                                        活动Banner
-                                    </div>
-                                </div>
-                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;">
-                                    <div style="text-align: center; font-size: 10px; color: #666;">
-                                        <div style="width: 32px; height: 32px; background: #1890ff; border-radius: 8px; margin: 0 auto 4px;"></div>
-                                        功能1
-                                    </div>
-                                    <div style="text-align: center; font-size: 10px; color: #666;">
-                                        <div style="width: 32px; height: 32px; background: #52c41a; border-radius: 8px; margin: 0 auto 4px;"></div>
-                                        功能2
-                                    </div>
-                                    <div style="text-align: center; font-size: 10px; color: #666;">
-                                        <div style="width: 32px; height: 32px; background: #faad14; border-radius: 8px; margin: 0 auto 4px;"></div>
-                                        功能3
-                                    </div>
-                                    <div style="text-align: center; font-size: 10px; color: #666;">
-                                        <div style="width: 32px; height: 32px; background: #f5222d; border-radius: 8px; margin: 0 auto 4px;"></div>
-                                        功能4
-                                    </div>
-                                </div>
-                                <div style="background: white; border-radius: 8px; padding: 12px;">
-                                    <div style="font-size: 11px; color: #333; margin-bottom: 8px; font-weight: 500;">今日数据</div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: #666;">
-                                        <span>发放积分</span>
-                                        <span style="color: #1890ff; font-weight: 500;">1,234</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 中间产品介绍 -->
-                <div class="hidden lg:block" style="max-width: 400px;">
-                    <h1 style="font-size: 32px; color: white; font-weight: 600; margin-bottom: 8px; text-align: center;">壹直购好伙伴</h1>
-                    <p style="font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 32px; text-align: center;">[打造车商好伙伴]</p>
-                    
-                    <div style="margin-bottom: 40px;">
-                        <div class="feature-item">
-                            <span>集团管理：经营报表，掌握门店数据。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>权益管理：权益直达车主，多级审批为安全保驾护航。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>车主俱乐部：装修线上门店，独立定制。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>卡券管理：助力车行精准宣传，引导客户回店核销。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>权益金管理：支付宝权益金，构建车主电子钱包。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>事故车管理：移动端快速采集事故车基本信息，易追溯、便监管。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>拓客管理：专为新车拓客营销等业务场景打造，提供全流程智能化解决方案。</span>
-                        </div>
-                        <div class="feature-item">
-                            <span>续保管理：解决传统续保业务中业财数据混淆、风险管控缺失等痛点。</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 二维码 -->
-                    <div style="display: flex; justify-content: center; gap: 40px;">
-                        <div style="text-align: center;">
-                            <div class="qr-box">
-                                <svg width="70" height="70" viewBox="0 0 70 70">
-                                    <rect x="5" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="10" width="15" height="15" fill="#333"/>
-                                    <rect x="40" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="45" y="10" width="15" height="15" fill="#333"/>
-                                    <rect x="5" y="40" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="45" width="15" height="15" fill="#333"/>
-                                    <rect x="35" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="45" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="55" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="35" y="45" width="5" height="5" fill="#333"/>
-                                    <rect x="50" y="50" width="5" height="5" fill="#333"/>
-                                    <rect x="60" y="60" width="5" height="5" fill="#333"/>
-                                </svg>
-                            </div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 8px; display: block;">壹直购公众号</span>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="qr-box">
-                                <svg width="70" height="70" viewBox="0 0 70 70">
-                                    <rect x="5" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="10" width="15" height="15" fill="#07C160"/>
-                                    <rect x="40" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="45" y="10" width="15" height="15" fill="#07C160"/>
-                                    <rect x="5" y="40" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="45" width="15" height="15" fill="#07C160"/>
-                                    <rect x="35" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="50" y="40" width="5" height="5" fill="#333"/>
-                                    <rect x="40" y="50" width="5" height="5" fill="#333"/>
-                                    <rect x="55" y="55" width="10" height="10" fill="#07C160"/>
-                                </svg>
-                            </div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 8px; display: block;">壹直购小程序</span>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="qr-box">
-                                <svg width="70" height="70" viewBox="0 0 70 70">
-                                    <rect x="5" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="10" width="15" height="15" fill="#FF6B6B"/>
-                                    <rect x="40" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="45" y="10" width="15" height="15" fill="#FF6B6B"/>
-                                    <rect x="5" y="40" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="45" width="15" height="15" fill="#FF6B6B"/>
-                                    <rect x="40" y="40" width="5" height="5" fill="#333"/>
-                                    <rect x="50" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="35" y="55" width="5" height="5" fill="#333"/>
-                                    <rect x="55" y="50" width="10" height="10" fill="#FF6B6B"/>
-                                </svg>
-                            </div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 8px; display: block;">壹直购视频号</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 右侧登录表单 -->
-                <div class="login-card">
-                    <div style="text-align: center; margin-bottom: 24px;">
-                        <h2 style="font-size: 20px; color: #1890ff; font-weight: 600; margin-bottom: 4px;">壹直购好伙伴登录</h2>
-                    </div>
-                    
-                    <!-- 登录方式Tab -->
-                    <div style="display: flex; border-bottom: 1px solid #e8e8e8; margin-bottom: 24px;">
-                        <div class="tab-btn active" onclick="switchTab('phone')">手机登录</div>
-                        <div class="tab-btn" onclick="switchTab('qr')">扫码登录</div>
-                    </div>
-                    
-                    <!-- 手机登录表单 -->
-                    <div id="phoneLogin">
-                        <div style="margin-bottom: 16px;">
-                            <div style="position: relative;">
-                                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                    </svg>
-                                </span>
-                                <input type="text" id="loginAccount" class="input-field" style="padding-left: 40px;" placeholder="请输入手机号" value="admin">
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 16px;">
-                            <div style="display: flex; gap: 12px;">
-                                <div style="position: relative; flex: 1;">
-                                    <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;">
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                        </svg>
-                                    </span>
-                                    <input type="text" id="loginCode" class="input-field" style="padding-left: 40px;" placeholder="请输入验证码">
-                                </div>
-                                <div class="code-box" onclick="refreshCode()" id="codeText">A1B2</div>
-                            </div>
-                            <div style="text-align: right; margin-top: 4px;">
-                                <span style="font-size: 12px; color: #999; cursor: pointer;" onclick="refreshCode()">看不清？换一张</span>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 24px;">
-                            <div style="position: relative;">
-                                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-                                    </svg>
-                                </span>
-                                <input type="password" id="loginPassword" class="input-field" style="padding-left: 40px; flex: 1;" placeholder="请输入动态码" value="123456">
-                                <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #1890ff; font-size: 13px; cursor: pointer;" onclick="showToast('动态码已发送')">获取动态码</span>
-                            </div>
-                        </div>
-                        <button class="btn-primary" onclick="handleLogin()">登录</button>
-                    </div>
-                    
-                    <!-- 扫码登录表单 -->
-                    <div id="qrLogin" class="hidden" style="text-align: center; padding: 40px 0;">
-                        <div style="width: 180px; height: 180px; background: #f5f5f5; border-radius: 8px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                            <svg width="120" height="120" viewBox="0 0 70 70">
-                                <rect x="5" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                <rect x="10" y="10" width="15" height="15" fill="#1890ff"/>
-                                <rect x="40" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                <rect x="45" y="10" width="15" height="15" fill="#1890ff"/>
-                                <rect x="5" y="40" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                <rect x="10" y="45" width="15" height="15" fill="#1890ff"/>
-                                <rect x="35" y="35" width="5" height="5" fill="#333"/>
-                                <rect x="50" y="35" width="5" height="5" fill="#333"/>
-                                <rect x="40" y="45" width="5" height="5" fill="#333"/>
-                                <rect x="55" y="50" width="10" height="10" fill="#1890ff"/>
-                            </svg>
-                        </div>
-                        <p style="color: #666; font-size: 14px;">打开壹直购APP扫一扫登录</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body class="min-h-screen">
+    <!-- Toast容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <p class="font-medium mb-1">待充值金额计算规则</p>
+        <div class="border-t border-gray-600 my-2"></div>
+        <p class="text-gray-300 text-xs leading-relaxed">
+            待充值金额 = 有效回款单金额 × 对应客户结算系数<br>
+            系统自动识别您已提交的有效回款单<br>
+            不同结算系数的商户将展示对应可充值金额<br>
+            金额由系统自动计算，确保准确无误<br>
+            如有疑问，请联系您的专属商务经理咨询
+        </p>
     </div>
 
-    <!-- ==================== 首页 ==================== -->
-    <div id="homePage" class="hidden">
-        <!-- 侧边栏 -->
-        <div class="sidebar">
-            <div class="p-6 text-white">
-                <div class="flex items-center gap-3">
+    <div class="flex min-h-screen">
+        <!-- 左侧侧边栏 -->
+        <aside class="sidebar w-64 flex-shrink-0 fixed h-full overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center gap-3 text-white">
                     <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -636,9 +441,10 @@
                 </div>
             </div>
             
-            <nav class="px-4">
+            <nav class="px-4 pb-6">
+                <!-- 首页导航 -->
                 <div class="mb-6">
-                    <div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-500 text-white cursor-pointer">
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('首页功能开发中')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
@@ -646,415 +452,1146 @@
                     </div>
                 </div>
                 
-                <div class="mb-2 px-4 text-xs text-gray-500 uppercase">账户明细</div>
-                <div class="space-y-1 text-gray-400">
-                    <div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 cursor-pointer">
+                <!-- 账户明细分组 -->
+                <div class="mb-2 px-4 text-xs text-gray-500 uppercase tracking-wider">账户明细</div>
+                <div class="space-y-1">
+                    <div id="nav-points" class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-lg text-white cursor-pointer" onclick="navTo('points')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span>积分明细</span>
                     </div>
-                    <div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 cursor-pointer">
+                    <div id="nav-balance" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="navTo('balance')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                         </svg>
                         <span>余额明细</span>
                     </div>
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('权益金明细功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>权益金明细</span>
+                    </div>
+                    <div class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="showToast('授信单明细功能开发中')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>授信单明细</span>
+                    </div>
                 </div>
             </nav>
-        </div>
+        </aside>
 
         <!-- 主内容区 -->
-        <div class="home-content">
-            <!-- 顶部导航 -->
-            <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <button class="text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        <main class="flex-1 ml-64">
+            <!-- 顶部导航栏 -->
+            <header class="bg-white shadow-sm sticky top-0 z-50">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <!-- 面包屑 -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-500">首页</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
-                    </button>
-                    <span class="text-gray-700 font-medium">首页</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <button class="text-gray-500 hover:text-gray-700 relative">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">1</span>
-                    </button>
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">1</div>
-                        <span class="text-sm text-gray-700">当前是张三-1门店</span>
+                        <span id="breadcrumb-text" class="text-gray-900 font-medium">积分明细</span>
+                    </div>
+                    
+                    <!-- 用户头像下拉 -->
+                    <div class="dropdown relative">
+                        <div class="flex items-center gap-3 cursor-pointer">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                                张
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="text-sm font-medium text-gray-900">张三</div>
+                                <div class="text-xs text-gray-500">超级管理员</div>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="dropdown-menu mt-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showToast('个人中心功能开发中')">个人中心</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showToast('账户设置功能开发中')">账户设置</a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50" onclick="showToast('已退出登录')">退出登录</a>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <!-- 内容区域 -->
+            <!-- 页面内容 -->
             <div class="p-6">
-                <!-- 待办事项 -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">您的待办</h3>
-                    <div class="grid grid-cols-4 gap-4">
-                        <div class="todo-card" onclick="showToast('积分上账审核页面开发中')">
-                            <div class="text-sm opacity-80">积分上账审核</div>
-                            <div class="count">12</div>
-                        </div>
-                        <div class="todo-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="showToast('批量发放审核页面开发中')">
-                            <div class="text-sm opacity-80">批量发放审核</div>
-                            <div class="count">12</div>
-                        </div>
-                        <div class="todo-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="showToast('服务券发放审核页面开发中')">
-                            <div class="text-sm opacity-80">服务券发放审核</div>
-                            <div class="count">1</div>
-                        </div>
-                        <div class="todo-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" onclick="showToast('事故车信息审核页面开发中')">
-                            <div class="text-sm opacity-80">事故车信息审核</div>
-                            <div class="count">4</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 数据统计 -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">数据统计</h3>
-                    <div class="grid grid-cols-4 gap-4">
-                        <div class="stat-card">
-                            <div class="value">0.00</div>
-                            <div class="label">今日发放积分</div>
-                            <div class="trend flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                                </svg>
-                                0.00% 较昨日
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="value">0</div>
-                            <div class="label">今日发放人数</div>
-                            <div class="trend flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                                </svg>
-                                0.00% 较昨日
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="value">0.00</div>
-                            <div class="label">今日领取积分</div>
-                            <div class="trend flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                                </svg>
-                                0.00% 较昨日
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="value">0</div>
-                            <div class="label">批量上账失败待处理</div>
-                            <div class="trend text-gray-500 mt-2">
-                                —
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 系统公告 & 常见问题 -->
-                <div class="grid grid-cols-2 gap-6 mb-6">
-                    <!-- 系统公告 -->
-                    <div class="module-card p-5">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-semibold text-gray-800">系统公告</h3>
-                            <a href="#" class="text-blue-500 text-sm hover:underline" onclick="event.preventDefault(); showToast('查看更多公告')">查看更多></a>
-                        </div>
-                        <div class="space-y-0">
-                            <div class="announcement-item" onclick="showAnnouncementDetail(0)">
-                                <div class="title">关于'事故车登记批量文件上传'功能优化的通知</div>
-                                <div class="time">2026-03-31 10:05:30</div>
-                            </div>
-                            <div class="announcement-item" onclick="showAnnouncementDetail(1)">
-                                <div class="title">【优化通知】积分批量上传功能升级：支持下载错误报告</div>
-                                <div class="time">2025-12-03 09:40:22</div>
-                            </div>
-                            <div class="announcement-item" onclick="showAnnouncementDetail(2)">
-                                <div class="title">关于'批量上账'新增'单条发放'功能上线的通知</div>
-                                <div class="time">2025-12-01 09:55:40</div>
-                            </div>
+                <!-- 页面1：积分明细 -->
+                <div id="page-points" class="page-section active">
+                    <!-- 页签导航 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item" onclick="showToast('首页功能开发中')">首页</div>
+                            <div class="tab-item" onclick="navTo('balance')">余额明细</div>
+                            <div class="tab-item active">积分明细</div>
                         </div>
                     </div>
 
-                    <!-- 常见问题解答 -->
-                    <div class="module-card p-5">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-semibold text-gray-800">常见问题解答</h3>
-                            <a href="#" class="text-blue-500 text-sm hover:underline" onclick="event.preventDefault(); showToast('查看更多问题')">查看更多></a>
-                        </div>
-                        <div class="space-y-0">
-                            <div class="faq-item active">
-                                <div class="faq-question" onclick="toggleFaq(this)">
-                                    <span>登录壹直购好伙伴时，收不到短信验证码怎么办？</span>
-                                    <svg class="faq-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    <!-- 账户概览 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
+                                    <span class="font-medium">积分余额</span>
                                 </div>
-                                <div class="faq-answer">
-                                    请检查手机网络是否正常，短信是否被拦截。如仍未收到，请联系客服。
+                                <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="handleRefresh(this)">
+                                    <svg class="w-5 h-5 text-gray-500 refresh-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="text-3xl font-bold text-gray-900" id="pointsBalance">221.88</div>
+                            <div class="text-sm text-gray-500 mt-1">总可用额度(积分)</div>
+                        </div>
+                        
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    <span class="font-medium">待充值金额</span>
                                 </div>
                             </div>
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
-                                    <span>导入发放文件时失败，提示错误，应如何处理？</span>
-                                    <svg class="faq-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                    </svg>
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <div class="text-3xl font-bold text-orange-500" id="pointsMaxRecharge">10,000.00</div>
+                                    <div class="text-sm text-gray-500 mt-1 flex items-center gap-1">基于您的回款金额计算
+                                        <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="faq-answer">
-                                    请检查文件格式是否符合要求，必要字段是否填写完整，编码格式是否为UTF-8。
-                                </div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
-                                    <span>如何领取和使用我的积分？</span>
-                                    <svg class="faq-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                    </svg>
-                                </div>
-                                <div class="faq-answer">
-                                    积分会自动发放到您的账户，您可以在积分明细中查看，使用时请前往相关门店消费。
-                                </div>
+                                <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium" onclick="openRechargeModal('points')">
+                                    + 去充值
+                                </button>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 筛选区域 -->
+                    <div class="card p-5 mb-6">
+                        <div class="flex flex-wrap items-end gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="date" id="pointsStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    <span class="text-gray-400">至</span>
+                                    <input type="date" id="pointsEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">类型</label>
+                                <select id="pointsTypeFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32">
+                                    <option value="">全部</option>
+                                    <option value="积分退还">积分退还</option>
+                                    <option value="积分充值">积分充值</option>
+                                    <option value="积分发放">积分发放</option>
+                                    <option value="系统">系统</option>
+                                    <option value="积分扣除">积分扣除</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">操作人</label>
+                                <select id="pointsOperatorFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32">
+                                    <option value="">全部</option>
+                                    <option value="self">自主充值</option>
+                                    <option value="platform">平台充值</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-2 ml-auto">
+                                <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterPointsData()">查询</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetPointsFilter()">重置</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2" onclick="exportPointsData()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    导出
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 积分明细表格 -->
+                    <div class="card mb-6">
+                        <div class="p-5 border-b">
+                            <h3 class="font-semibold text-gray-900">积分明细</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>变更积分</th>
+                                        <th>变更后账户积分</th>
+                                        <th>操作人</th>
+                                        <th>描述</th>
+                                        <th>变更时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pointsTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span id="pointsTotal">15</span> 条记录</span>
+                            <div class="flex gap-1" id="pointsPagination"></div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- 平台服务 -->
-                <div class="grid grid-cols-3 gap-6">
-                    <div class="module-card p-5">
-                        <h3 class="font-semibold text-gray-800 mb-4">在线客服</h3>
-                        <div class="service-card">
-                            <div class="icon">
-                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm text-gray-500 mb-3">工作时间：工作日 8:30-19:00<br>节假日 9:00-18:00</p>
-                            <button class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600" onclick="showToast('客服功能开发中')">
-                                立即咨询
-                            </button>
+                <!-- 页面2：余额明细 -->
+                <div id="page-balance" class="page-section">
+                    <!-- 页签导航 -->
+                    <div class="bg-white rounded-t-lg border-b">
+                        <div class="flex">
+                            <div class="tab-item" onclick="showToast('首页功能开发中')">首页</div>
+                            <div class="tab-item active">余额明细</div>
+                            <div class="tab-item" onclick="navTo('points')">积分明细</div>
                         </div>
                     </div>
-                    <div class="module-card p-5">
-                        <h3 class="font-semibold text-gray-800 mb-4">官方微信号</h3>
-                        <div class="service-card">
-                            <div class="qr-box" style="width: 120px; height: 120px;">
-                                <svg width="100" height="100" viewBox="0 0 70 70">
-                                    <rect x="5" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="10" width="15" height="15" fill="#333"/>
-                                    <rect x="40" y="5" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="45" y="10" width="15" height="15" fill="#333"/>
-                                    <rect x="5" y="40" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/>
-                                    <rect x="10" y="45" width="15" height="15" fill="#333"/>
-                                    <rect x="35" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="45" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="55" y="35" width="5" height="5" fill="#333"/>
-                                    <rect x="35" y="45" width="5" height="5" fill="#333"/>
-                                    <rect x="50" y="50" width="5" height="5" fill="#333"/>
-                                    <rect x="60" y="60" width="5" height="5" fill="#333"/>
-                                </svg>
+
+                    <!-- 账户概览 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                    </svg>
+                                    <span class="font-medium">账户余额</span>
+                                </div>
+                                <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" onclick="refreshBalance(this)">
+                                    <svg class="w-5 h-5 text-gray-500 refresh-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <p class="text-sm text-gray-500 mt-3">扫码关注官方公众号</p>
+                            <div class="text-3xl font-bold text-gray-900" id="balanceAmount">1.99</div>
+                            <div class="text-sm text-gray-500 mt-1">总可用额度(元)</div>
+                        </div>
+                        
+                        <div class="card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    <span class="font-medium">待充值金额</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <div>
+                                    <div class="text-3xl font-bold text-orange-500" id="balanceMaxRecharge">8,000.00</div>
+                                    <div class="text-sm text-gray-500 mt-1 flex items-center gap-1">基于您的回款金额计算
+                                        <svg class="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium" onclick="openRechargeModal('balance')">
+                                    + 去充值
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="module-card p-5">
-                        <h3 class="font-semibold text-gray-800 mb-4">壹直购好伙伴(移动端)</h3>
-                        <div class="service-card">
-                            <div class="qr-box" style="width: 120px; height: 120px; background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%); border-radius: 16px;">
-                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
+
+                    <!-- 筛选区域 -->
+                    <div class="card p-5 mb-6">
+                        <div class="flex flex-wrap items-end gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">变更时间</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="date" id="balanceStartDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                    <span class="text-gray-400">至</span>
+                                    <input type="date" id="balanceEndDate" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36">
+                                </div>
                             </div>
-                            <p class="text-sm text-gray-500 mt-3">扫码登录，更便捷的移动端使用</p>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">类型</label>
+                                <select id="balanceTypeFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-40">
+                                    <option value="">全部</option>
+                                    <option value="余额充值">余额充值</option>
+                                    <option value="批量发放">批量发放</option>
+                                    <option value="批量发放退回">批量发放退回</option>
+                                    <option value="批量发放明细退回">批量发放明细退回</option>
+                                    <option value="系统">系统</option>
+                                    <option value="余额扣除">余额扣除</option>
+                                    <option value="手续费">手续费</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-2">操作人</label>
+                                <select id="balanceOperatorFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32">
+                                    <option value="">全部</option>
+                                    <option value="self">自主充值</option>
+                                    <option value="platform">平台充值</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-2 ml-auto">
+                                <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium" onclick="filterBalanceData()">查询</button>
+                                <button class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50" onclick="resetBalanceFilter()">重置</button>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 余额明细表格 -->
+                    <div class="card mb-6">
+                        <div class="p-5 border-b">
+                            <h3 class="font-semibold text-gray-900">余额明细</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>变更金额</th>
+                                        <th>变更后账户余额</th>
+                                        <th>操作人</th>
+                                        <th>描述</th>
+                                        <th>变更时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="balanceTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex items-center justify-between">
+                            <span class="text-sm text-gray-500">共 <span id="balanceTotal">16</span> 条记录</span>
+                            <div class="flex gap-1" id="balancePagination"></div>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
-        </div>
+        </main>
     </div>
 
-    <!-- ==================== 系统公告弹窗 ==================== -->
-    <div class="modal-overlay" id="announcementModal">
+    <!-- 充值弹窗 -->
+    <div class="modal-overlay" id="rechargeModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="title">系统公告</div>
-                <div class="flex items-center gap-4">
-                    <span class="page-num" id="pageNum">1/3</span>
-                    <button onclick="skipAnnouncement()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+            <div class="p-6 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold" id="rechargeModalTitle">账户充值</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('rechargeModal')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- 商户信息 -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-500">当前充值门店</div>
+                            <div class="font-medium text-gray-900 mt-1" id="currentStoreName">广东张三有限公司</div>
+                        </div>
+                        <button class="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-blue-600 transition-colors" onclick="openStoreSelector()">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            </svg>
+                            切换门店
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-body" id="announcementContent">
-                <!-- 动态填充 -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn-skip" onclick="skipAnnouncement()">跳过</button>
-                <button class="btn-action" id="modalActionBtn" onclick="nextAnnouncement()">下一步</button>
+                
+                <!-- 充值提示 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-5 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="text-sm text-blue-700">
+                        <span class="font-medium">充值金额说明</span><br>
+                        可充值金额已根据您的账户采购折扣自动计算，确保金额准确无误。
+                    </div>
+                </div>
+                
+                <!-- 充值账户 -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">请选择充值账户 <span class="text-red-500">*</span></label>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300" id="accountOption1">
+                            <input type="radio" name="rechargeAccount" value="points" class="radio-custom" checked onchange="updateAccountInfo()">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">积分账户</div>
+                                <div class="text-sm text-gray-500 mt-1">当前余额：<span class="text-gray-700" id="pointsAccountBalance">221.88</span>积分</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">可充金额</div>
+                                <div class="font-semibold text-gray-900" id="pointsMaxAmount">10,000.00</div>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300" id="accountOption2">
+                            <input type="radio" name="rechargeAccount" value="batch" class="radio-custom" onchange="updateAccountInfo()">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">批量账户</div>
+                                <div class="text-sm text-gray-500 mt-1">当前余额：<span class="text-gray-700" id="batchAccountBalance">1.99</span>元</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">可充金额</div>
+                                <div class="font-semibold text-gray-900" id="batchMaxAmount">8,000.00</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 充值金额 -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">充值金额 <span class="text-red-500">*</span></label>
+                    <div class="flex gap-2">
+                        <input type="number" id="rechargeAmount" class="flex-1 border border-gray-300 rounded-lg px-3 py-2.5" placeholder="请输入充值金额" step="0.01">
+                        <button class="px-4 py-2 text-blue-600 text-sm font-medium hover:text-blue-700 whitespace-nowrap" onclick="setMaxRecharge()">全部充值</button>
+                    </div>
+                </div>
+
+                <!-- 按钮 -->
+                <div class="flex gap-3">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('rechargeModal')">取消</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="openConfirmModal()">确认充值</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast通知 -->
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
+    <!-- 门店选择弹窗 -->
+    <div class="modal-overlay" id="storeSelectorModal">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">切换门店</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('storeSelectorModal')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="text-sm text-gray-500 mb-4">请选择要充值的门店</div>
+                <div class="space-y-3" id="storeList">
+                    <!-- 门店列表 -->
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="1">
+                        <input type="radio" name="selectedStore" value="广东张三有限公司" class="radio-custom" checked>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">广东张三有限公司</div>
+                            <div class="text-sm text-gray-500 mt-1">当前门店</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="2">
+                        <input type="radio" name="selectedStore" value="深圳李四汽车服务有限公司" class="radio-custom">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">深圳李四汽车服务有限公司</div>
+                            <div class="text-sm text-gray-500 mt-1">可充金额：15,000.00</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="3">
+                        <input type="radio" name="selectedStore" value="广州王五汽车销售有限公司" class="radio-custom">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">广州王五汽车销售有限公司</div>
+                            <div class="text-sm text-gray-500 mt-1">可充金额：12,000.00</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="4">
+                        <input type="radio" name="selectedStore" value="东莞赵六汽车维修中心" class="radio-custom">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">东莞赵六汽车维修中心</div>
+                            <div class="text-sm text-gray-500 mt-1">可充金额：8,000.00</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- 按钮 -->
+                <div class="flex gap-3 mt-6">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('storeSelectorModal')">取消</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="switchStore()">确认切换</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二次确认弹窗 -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content" style="max-width: 440px;">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h3 class="text-lg font-semibold">充值确认</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('confirmModal')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- 警告提示 -->
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-5 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div class="text-sm text-amber-700">
+                        <span class="font-medium">请确认充值信息</span><br>
+                        充值确认后将立即扣款，无法撤销，请仔细核对信息
+                    </div>
+                </div>
+
+                <!-- 确认信息 -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值门店</span>
+                        <span class="text-gray-900 text-sm font-medium">广东张三有限公司</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值账户</span>
+                        <span class="text-gray-900 text-sm font-medium" id="confirmAccount">积分账户</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">当前账户余额</span>
+                        <span class="text-gray-900 text-sm font-medium" id="confirmCurrentBalance">221.88积分</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值金额</span>
+                        <span class="text-green-600 text-sm font-bold" id="confirmAmount">+10,000.00 积分</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500 text-sm">充值后账户余额</span>
+                        <span class="text-blue-600 text-sm font-bold" id="confirmAfterBalance">10,221.88 积分</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="backToRecharge()">取消</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="submitRecharge()">确认立即充值</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 充值成功弹窗 -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="p-8 text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">充值成功</h3>
+                <p class="text-sm text-gray-500 mb-6" id="successDesc">积分已实时到账，您可以立即使用</p>
+
+                <div class="flex gap-3">
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" id="viewDetailBtn" onclick="viewDetail()">查看明细</button>
+                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="finishRecharge()">完成</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ==================== 系统公告数据 ====================
-        const announcements = [
-            {
-                title: '关于"事故车登记批量文件上传"功能优化的通知',
-                content: '<p>尊敬的用户：</p><p>为了提升用户体验，我们对"事故车登记批量文件上传"功能进行了优化升级。本次更新主要包括：</p><ul style="margin: 16px 0; padding-left: 24px;"><li>支持更大文件上传，单文件最高可达10MB</li><li>优化上传速度，提升50%</li><li>新增上传进度实时显示</li><li>修复了部分用户反馈的上传失败问题</li></ul><p>如在使用过程中遇到问题，请联系客服。</p><p style="margin-top: 20px;">壹直购好伙伴<br>2026年3月31日</p>',
-                time: '2026-03-31 10:05:30'
-            },
-            {
-                title: '【优化通知】积分批量上传功能升级：支持下载错误报告',
-                content: '<p>尊敬的用户：</p><p>积分批量上传功能现已升级，新增支持下载错误报告功能。</p><p>升级内容：</p><ul style="margin: 16px 0; padding-left: 24px;"><li>上传失败时可下载详细的错误报告</li><li>错误报告包含失败原因及建议解决方案</li><li>支持批量修正后重新上传</li></ul><p>详情请访问帮助中心。</p><p style="margin-top: 20px;">壹直购好伙伴<br>2025年12月3日</p>',
-                time: '2025-12-03 09:40:22'
-            },
-            {
-                title: '关于"批量上账"新增"单条发放"功能上线的通知',
-                content: '<p>尊敬的用户：</p><p>我们很高兴地宣布，"批量上账"功能现已新增"单条发放"子功能。</p><p>新功能特点：</p><ul style="margin: 16px 0; padding-left: 24px;"><li>支持单独发放积分/权益</li><li>操作更灵活便捷</li><li>可追溯每笔发放记录</li></ul><p>欢迎体验！</p><p style="margin-top: 20px;">壹直购好伙伴<br>2025年12月1日</p>',
-                time: '2025-12-01 09:55:40'
-            }
+        // ==================== Mock数据 ====================
+        const allPointsData = [
+            { name: '积分充值', type: '积分充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '积分充值，共充值积分：10.00', time: '2026-04-23 16:37:45' },
+            { name: '积分充值', type: '积分充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '积分充值，共充值积分：10.00', time: '2026-03-23 16:37:45' },
+            { name: '积分充值', type: '积分充值', change: 150.00, balance: 150.00, operator: '平台充值', operatorType: 'platform', desc: '积分充值，共充值积分：150.00', time: '2026-02-23 16:37:45' },
+            { name: '积分发放', type: '积分发放', change: 152.00, balance: 152.00, operator: '平台充值', operatorType: 'platform', desc: '积分发放，共发放积分：152.00', time: '2025-12-13 14:01:25' },
+            { name: '积分退还', type: '积分退还', change: 500.00, balance: 500.00, operator: '系统', operatorType: 'system', desc: '积分退还，共退还积分：500.00', time: '2025-11-20 10:30:00' },
+            { name: '积分扣除', type: '积分扣除', change: -200.00, balance: 200.00, operator: '系统', operatorType: 'system', desc: '积分扣除，共扣除积分：200.00', time: '2025-10-15 09:20:00' },
+            { name: '系统调整', type: '系统', change: 1000.00, balance: 1000.00, operator: '系统', operatorType: 'system', desc: '系统调整，共调整积分：1000.00', time: '2025-09-08 14:50:00' }
         ];
+
+        const balanceData = [
+            { name: '余额充值', type: '余额充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '余额充值，共充值金额：10.00', time: '2026-04-23 16:37:45' },
+            { name: '余额充值', type: '余额充值', change: 10.00, balance: 10.00, operator: '自主充值', operatorType: 'self', desc: '余额充值，共充值金额：10.00', time: '2026-03-23 16:37:45' },
+            { name: '批量发放', type: '批量发放', change: -150.00, balance: 150.00, operator: '平台充值', operatorType: 'platform', desc: '批量发放，共发放金额：150.00', time: '2026-02-23 16:37:45' },
+            { name: '批量发放退回', type: '批量发放退回', change: 152.00, balance: 152.00, operator: '系统', operatorType: 'system', desc: '批量发放退回，共退回金额：152.00', time: '2025-12-13 14:01:25' },
+            { name: '批量发放明细退回', type: '批量发放明细退回', change: 500.00, balance: 500.00, operator: '系统', operatorType: 'system', desc: '批量发放明细退回，共退回金额：500.00', time: '2025-11-20 10:30:00' },
+            { name: '余额扣除', type: '余额扣除', change: -200.00, balance: 200.00, operator: '系统', operatorType: 'system', desc: '余额扣除，共扣除金额：200.00', time: '2025-10-15 09:20:00' },
+            { name: '手续费', type: '手续费', change: -5.00, balance: 5.00, operator: '系统', operatorType: 'system', desc: '手续费，共扣除金额：5.00', time: '2025-09-08 14:50:00' }
+        ];
+
+        // ==================== 全局状态 ====================
+        let currentPage = 'points';
+        let pointsPageNum = 1;
+        let balancePageNum = 1;
+        let filteredPointsData = [...allPointsData];
+        let filteredBalanceData = [...balanceData];
+        let currentRechargeType = 'points';
         
-        let currentAnnouncementIndex = 0;
-        let hasShownAnnouncement = false;
+        // 账户余额和待充值额度
+        let pointsBalanceValue = 221.88;
+        let balanceAmountValue = 1.99;
+        let pointsMaxRechargeValue = 10000.00;
+        let balanceMaxRechargeValue = 8000.00;
 
-        // ==================== 登录相关 ====================
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认日期
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
             
-            if (tab === 'phone') {
-                document.getElementById('phoneLogin').classList.remove('hidden');
-                document.getElementById('qrLogin').classList.add('hidden');
-            } else {
-                document.getElementById('phoneLogin').classList.add('hidden');
-                document.getElementById('qrLogin').classList.remove('hidden');
+            document.getElementById('pointsEndDate').value = formatDate(today);
+            document.getElementById('pointsStartDate').value = formatDate(thirtyDaysAgo);
+            document.getElementById('balanceEndDate').value = formatDate(today);
+            document.getElementById('balanceStartDate').value = formatDate(thirtyDaysAgo);
+            
+            // 初始化表格
+            renderPointsTable();
+            renderBalanceTable();
+        });
+
+        // ==================== 路由控制 ====================
+        function navTo(page) {
+            currentPage = page;
+            
+            // 隐藏所有页面
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            
+            // 显示目标页面
+            document.getElementById('page-' + page).classList.add('active');
+            
+            // 更新侧边栏高亮
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            if (page === 'points' || page === 'balance') {
+                document.getElementById('nav-' + page).classList.add('active');
             }
+            
+            // 更新面包屑
+            const breadcrumbMap = {
+                'points': '积分明细',
+                'balance': '余额明细',
+                'detail': '充值记录详情'
+            };
+            document.getElementById('breadcrumb-text').textContent = breadcrumbMap[page];
+            
+            // 更新URL hash
+            history.replaceState(null, '', '#' + page);
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 监听hash变化
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash.replace('#', '');
+            if (['points', 'balance', 'detail'].includes(hash)) {
+                navTo(hash);
+            }
+        });
+        
+        // 页面加载时根据hash初始化（直接执行，因为script在body底部）
+        (function() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && ['points', 'balance', 'detail'].includes(hash)) {
+                navTo(hash);
+            }
+        })();
+
+        // ==================== 弹窗控制 ====================
+        function openRechargeModal(type) {
+            currentRechargeType = type;
+            // 积分明细默认选中积分账户，余额明细默认选中批量账户
+            const defaultAccount = type === 'points' ? 'points' : 'batch';
+            document.querySelector(`input[name="rechargeAccount"][value="${defaultAccount}"]`).checked = true;
+            
+            // 更新弹窗中的余额和可充金额显示
+            document.getElementById('pointsAccountBalance').textContent = pointsBalanceValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('pointsMaxAmount').textContent = pointsMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchAccountBalance').textContent = balanceAmountValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchMaxAmount').textContent = balanceMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            
+            updateAccountInfo();
+            document.getElementById('rechargeAmount').value = '';
+            document.getElementById('rechargeModal').classList.add('active');
         }
 
-        function refreshCode() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let code = '';
-            for (let i = 0; i < 4; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById('codeText').textContent = code;
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
 
-        function handleLogin() {
-            const account = document.getElementById('loginAccount').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            // 固定账号验证
-            if (account !== 'admin') {
-                showToast('账号不正确');
+        // 门店数据
+        const storeData = {
+            '广东张三有限公司': { pointsMax: 10000, balanceMax: 8000, pointsBalance: 221.88, balanceBalance: 1.99 },
+            '深圳李四汽车服务有限公司': { pointsMax: 15000, balanceMax: 12000, pointsBalance: 500.00, balanceBalance: 100.00 },
+            '广州王五汽车销售有限公司': { pointsMax: 12000, balanceMax: 10000, pointsBalance: 300.00, balanceBalance: 50.00 },
+            '东莞赵六汽车维修中心': { pointsMax: 8000, balanceMax: 6000, pointsBalance: 150.00, balanceBalance: 20.00 }
+        };
+        let currentStore = '广东张三有限公司';
+
+        // 打开门店选择器
+        function openStoreSelector() {
+            // 设置当前选中的门店
+            document.querySelectorAll('input[name="selectedStore"]').forEach(radio => {
+                radio.checked = (radio.value === currentStore);
+            });
+            document.getElementById('storeSelectorModal').classList.add('active');
+        }
+
+        // 切换门店
+        function switchStore() {
+            const selected = document.querySelector('input[name="selectedStore"]:checked');
+            if (!selected) {
+                showToast('请选择门店');
                 return;
             }
-            if (password !== '123456') {
-                showToast('密码不正确');
+            
+            const newStore = selected.value;
+            if (newStore === currentStore) {
+                closeModal('storeSelectorModal');
                 return;
             }
             
-            // 登录成功，切换到首页
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('homePage').classList.remove('hidden');
+            // 更新当前门店
+            currentStore = newStore;
+            const data = storeData[newStore];
             
-            // 登录成功后，显示系统公告弹窗
-            showAnnouncementModal();
+            // 更新充值弹窗显示
+            document.getElementById('currentStoreName').textContent = newStore;
+            document.getElementById('pointsMaxAmount').textContent = data.pointsMax.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchMaxAmount').textContent = data.balanceMax.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('pointsAccountBalance').textContent = data.pointsBalance.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            document.getElementById('batchAccountBalance').textContent = data.balanceBalance.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            
+            // 更新全局变量
+            pointsMaxRechargeValue = data.pointsMax;
+            balanceMaxRechargeValue = data.balanceMax;
+            pointsBalanceValue = data.pointsBalance;
+            balanceAmountValue = data.balanceBalance;
+            
+            closeModal('storeSelectorModal');
+            showToast('已切换到：' + newStore);
         }
 
-        // ==================== 首页相关 ====================
-        function toggleFaq(element) {
-            const item = element.parentElement;
-            item.classList.toggle('active');
+        function updateAccountInfo() {
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const amountInput = document.getElementById('rechargeAmount');
+            amountInput.value = '';
         }
 
-        function showAnnouncementDetail(index) {
-            currentAnnouncementIndex = index;
-            showAnnouncementModal();
+        function openConfirmModal() {
+            const amount = parseFloat(document.getElementById('rechargeAmount').value);
+            if (!amount || amount <= 0) {
+                showToast('请输入有效的充值金额');
+                return;
+            }
+
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const isPoints = selected === 'points';
+            const accountName = isPoints ? '积分账户' : '批量账户';
+            const unit = isPoints ? '积分' : '元';
+            const currentBalance = isPoints ? 221.88 : 1.99;
+            const maxAmount = isPoints ? 10000 : 8000;
+
+            if (amount > maxAmount) {
+                showToast('充值金额不能超过可充金额');
+                return;
+            }
+
+            const afterBalance = (currentBalance + amount).toFixed(2);
+
+            document.getElementById('confirmAccount').textContent = accountName;
+            document.getElementById('confirmCurrentBalance').textContent = currentBalance.toFixed(2) + unit;
+            document.getElementById('confirmAmount').textContent = '+' + amount.toLocaleString('zh-CN', {minimumFractionDigits: 2}) + ' ' + unit;
+            document.getElementById('confirmAfterBalance').textContent = parseFloat(afterBalance).toLocaleString('zh-CN', {minimumFractionDigits: 2}) + ' ' + unit;
+
+            closeModal('rechargeModal');
+            document.getElementById('confirmModal').classList.add('active');
         }
 
-        // ==================== 系统公告弹窗 ====================
-        function showAnnouncementModal() {
-            if (hasShownAnnouncement) return;
+        function backToRecharge() {
+            closeModal('confirmModal');
+            document.getElementById('rechargeModal').classList.add('active');
+        }
+
+        function submitRecharge() {
+            closeModal('confirmModal');
+            const isPoints = currentRechargeType === 'points' || document.querySelector('input[name="rechargeAccount"]:checked').value === 'points';
+            const amount = parseFloat(document.getElementById('rechargeAmount').value);
+            const now = new Date();
+            const timeStr = formatDate(now) + ' ' + now.toTimeString().slice(0, 8);
             
-            const modal = document.getElementById('announcementModal');
-            const content = document.getElementById('announcementContent');
-            const pageNum = document.getElementById('pageNum');
-            const actionBtn = document.getElementById('modalActionBtn');
-            
-            const total = announcements.length;
-            const current = announcements[currentAnnouncementIndex];
-            
-            content.innerHTML = `
-                <h4 class="text-lg font-semibold mb-4">${current.title}</h4>
-                <div class="text-sm text-gray-600 leading-relaxed">
-                    ${current.content}
-                </div>
-                <div class="text-xs text-gray-400 mt-4">发布时间：${current.time}</div>
-            `;
-            
-            pageNum.textContent = `${currentAnnouncementIndex + 1}/${total}`;
-            
-            if (total === 1) {
-                actionBtn.textContent = '我知道了';
-                actionBtn.onclick = closeAnnouncementModal;
-            } else if (currentAnnouncementIndex === total - 1) {
-                actionBtn.textContent = '完成';
-                actionBtn.onclick = closeAnnouncementModal;
+            if (isPoints) {
+                // 积分充值闭环
+                pointsMaxRechargeValue -= amount;
+                pointsBalanceValue += amount;
+                
+                // 生成积分充值流水
+                const newRecord = {
+                    name: '积分充值',
+                    type: '积分充值',
+                    change: amount,
+                    balance: pointsBalanceValue,
+                    operator: '自主充值',
+                    operatorType: 'self',
+                    desc: `积分充值，共充值积分：${amount.toFixed(2)}`,
+                    time: timeStr
+                };
+                allPointsData.unshift(newRecord);
+                filteredPointsData = [...allPointsData];
+                
+                // 更新页面显示
+                document.getElementById('pointsBalance').textContent = pointsBalanceValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('pointsMaxRecharge').textContent = pointsMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('pointsMaxAmount').textContent = pointsMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('successDesc').textContent = '积分已实时到账，您可以立即使用';
+                
+                // 刷新表格
+                pointsPageNum = 1;
+                renderPointsTable();
             } else {
-                actionBtn.textContent = '下一步';
-                actionBtn.onclick = nextAnnouncement;
+                // 余额充值闭环
+                balanceMaxRechargeValue -= amount;
+                balanceAmountValue += amount;
+                
+                // 生成余额充值流水
+                const newRecord = {
+                    name: '余额充值',
+                    type: '余额充值',
+                    change: amount,
+                    balance: balanceAmountValue,
+                    operator: '自主充值',
+                    operatorType: 'self',
+                    desc: `余额充值，共充值金额：${amount.toFixed(2)}`,
+                    time: timeStr
+                };
+                balanceData.unshift(newRecord);
+                filteredBalanceData = [...balanceData];
+                
+                // 更新页面显示
+                document.getElementById('balanceAmount').textContent = balanceAmountValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('balanceMaxRecharge').textContent = balanceMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('batchMaxAmount').textContent = balanceMaxRechargeValue.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                document.getElementById('successDesc').textContent = '金额已实时到账，您可以立即使用';
+                
+                // 刷新表格
+                balancePageNum = 1;
+                renderBalanceTable();
             }
             
-            modal.classList.add('active');
-            hasShownAnnouncement = true;
+            // 根据充值类型动态设置按钮文本
+            document.getElementById('viewDetailBtn').textContent = isPoints ? '查看积分明细' : '查看余额明细';
+            document.getElementById('successModal').classList.add('active');
         }
 
-        function nextAnnouncement() {
-            if (currentAnnouncementIndex < announcements.length - 1) {
-                currentAnnouncementIndex++;
-                showAnnouncementModal();
+        function viewDetail() {
+            closeModal('successModal');
+            const isPoints = currentRechargeType === 'points';
+            
+            if (isPoints) {
+                // 积分充值后，跳转到积分明细并筛选积分充值类型
+                navTo('points');
+                document.getElementById('pointsTypeFilter').value = '积分充值';
+                filterPointsData();
+            } else {
+                // 余额充值后，跳转到余额明细并筛选余额充值类型
+                navTo('balance');
+                document.getElementById('balanceTypeFilter').value = '余额充值';
+                filterBalanceData();
             }
         }
 
-        function skipAnnouncement() {
-            closeAnnouncementModal();
+        function finishRecharge() {
+            closeModal('successModal');
+            showToast('充值成功，余额已更新');
         }
 
-        function closeAnnouncementModal() {
-            document.getElementById('announcementModal').classList.remove('active');
+        function setMaxRecharge() {
+            const selected = document.querySelector('input[name="rechargeAccount"]:checked').value;
+            const maxAmount = selected === 'points' ? pointsMaxRechargeValue : balanceMaxRechargeValue;
+            document.getElementById('rechargeAmount').value = maxAmount;
+        }
+
+        // ==================== 表格渲染 ====================
+        function renderPointsTable() {
+            const tbody = document.getElementById('pointsTableBody');
+            const pageSize = 10;
+            const start = (pointsPageNum - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = filteredPointsData.slice(start, end);
+            
+            tbody.innerHTML = pageData.map(item => {
+                // 仅积分充值类型展示操作人字段
+                const operatorCell = item.type === '积分充值' 
+                    ? `<td>${getOperatorTag(item.operator, item.operatorType)}</td>` 
+                    : '<td>-</td>';
+                return `
+                <tr>
+                    <td class="font-medium text-gray-900">${item.name}</td>
+                    <td>${getTypeLabel(item.type)}</td>
+                    <td class="${item.change > 0 ? 'amount-income' : 'amount-expense'} font-medium">
+                        ${item.change > 0 ? '+' : ''}${item.change.toLocaleString('zh-CN', {minimumFractionDigits: 2})}
+                    </td>
+                    <td>${item.balance.toLocaleString('zh-CN', {minimumFractionDigits: 2})}</td>
+                    ${operatorCell}
+                    <td class="text-gray-500">${item.desc}</td>
+                    <td class="text-gray-500">${item.time}</td>
+                </tr>
+            `}).join('');
+            
+            document.getElementById('pointsTotal').textContent = filteredPointsData.length;
+            renderPagination('pointsPagination', filteredPointsData.length, pointsPageNum, pageSize, goPointsPage);
+        }
+
+        function renderBalanceTable() {
+            const tbody = document.getElementById('balanceTableBody');
+            const pageSize = 10;
+            const start = (balancePageNum - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = filteredBalanceData.slice(start, end);
+            
+            tbody.innerHTML = pageData.map(item => {
+                // 仅余额充值类型展示操作人字段
+                const operatorCell = item.type === '余额充值' 
+                    ? `<td>${getOperatorTag(item.operator, item.operatorType)}</td>` 
+                    : '<td>-</td>';
+                return `
+                <tr>
+                    <td class="font-medium text-gray-900">${item.name}</td>
+                    <td>${getBalanceTypeLabel(item.type)}</td>
+                    <td class="${item.change > 0 ? 'amount-income' : 'amount-expense'} font-medium">
+                        ${item.change > 0 ? '+' : ''}${item.change.toLocaleString('zh-CN', {minimumFractionDigits: 2})}
+                    </td>
+                    <td>${item.balance.toLocaleString('zh-CN', {minimumFractionDigits: 2})}</td>
+                    ${operatorCell}
+                    <td class="text-gray-500">${item.desc}</td>
+                    <td class="text-gray-500">${item.time}</td>
+                </tr>
+            `}).join('');
+            
+            document.getElementById('balanceTotal').textContent = filteredBalanceData.length;
+            renderPagination('balancePagination', filteredBalanceData.length, balancePageNum, pageSize, goBalancePage);
+        }
+
+        function renderPagination(containerId, total, current, pageSize, callback) {
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) {
+                document.getElementById(containerId).innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // 上一页
+            html += `<button class="pagination-btn rounded-l-lg" ${current === 1 ? 'disabled' : ''} onclick="${callback.name}(${current - 1})">上一页</button>`;
+            
+            // 页码
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= current - 1 && i <= current + 1)) {
+                    html += `<button class="pagination-btn ${i === current ? 'active' : ''}" onclick="${callback.name}(${i})">${i}</button>`;
+                } else if (i === current - 2 || i === current + 2) {
+                    html += `<span class="pagination-btn">...</span>`;
+                }
+            }
+            
+            // 下一页
+            html += `<button class="pagination-btn rounded-r-lg" ${current === totalPages ? 'disabled' : ''} onclick="${callback.name}(${current + 1})">下一页</button>`;
+            
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        // ==================== 分页控制 ====================
+        function goPointsPage(page) {
+            pointsPageNum = page;
+            renderPointsTable();
+        }
+
+        function goBalancePage(page) {
+            balancePageNum = page;
+            renderBalanceTable();
+        }
+
+        // ==================== 筛选功能 ====================
+        function filterPointsData() {
+            const startDate = document.getElementById('pointsStartDate').value;
+            const endDate = document.getElementById('pointsEndDate').value;
+            const type = document.getElementById('pointsTypeFilter').value;
+            const operator = document.getElementById('pointsOperatorFilter').value;
+            
+            filteredPointsData = allPointsData.filter(item => {
+                if (startDate && item.time < startDate + ' 00:00:00') return false;
+                if (endDate && item.time > endDate + ' 23:59:59') return false;
+                if (type && item.type !== type) return false;
+                if (operator && item.operatorType !== operator) return false;
+                return true;
+            });
+            
+            pointsPageNum = 1;
+            renderPointsTable();
+            showToast('筛选完成，共 ' + filteredPointsData.length + ' 条记录');
+        }
+
+        function filterBalanceData() {
+            const startDate = document.getElementById('balanceStartDate').value;
+            const endDate = document.getElementById('balanceEndDate').value;
+            const type = document.getElementById('balanceTypeFilter').value;
+            const operator = document.getElementById('balanceOperatorFilter').value;
+            
+            filteredBalanceData = balanceData.filter(item => {
+                if (startDate && item.time < startDate + ' 00:00:00') return false;
+                if (endDate && item.time > endDate + ' 23:59:59') return false;
+                if (type && item.type !== type) return false;
+                if (operator && item.operatorType !== operator) return false;
+                return true;
+            });
+            
+            balancePageNum = 1;
+            renderBalanceTable();
+            showToast('筛选完成，共 ' + filteredBalanceData.length + ' 条记录');
+        }
+
+        function resetPointsFilter() {
+            document.getElementById('pointsTypeFilter').value = '';
+            document.getElementById('pointsOperatorFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('pointsEndDate').value = formatDate(today);
+            document.getElementById('pointsStartDate').value = formatDate(thirtyDaysAgo);
+            
+            filteredPointsData = [...allPointsData];
+            pointsPageNum = 1;
+            renderPointsTable();
+            showToast('已重置筛选条件');
+        }
+
+        function resetBalanceFilter() {
+            document.getElementById('balanceTypeFilter').value = '';
+            document.getElementById('balanceOperatorFilter').value = '';
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            document.getElementById('balanceEndDate').value = formatDate(today);
+            document.getElementById('balanceStartDate').value = formatDate(thirtyDaysAgo);
+            
+            filteredBalanceData = [...balanceData];
+            balancePageNum = 1;
+            renderBalanceTable();
+            showToast('已重置筛选条件');
+        }
+
+        function exportPointsData() {
+            showToast('数据导出中，请稍候...');
+            setTimeout(() => {
+                showToast('导出成功！文件已下载');
+            }, 1500);
+        }
+
+        // ==================== 刷新功能 ====================
+        function handleRefresh(btn) {
+            const icon = btn.querySelector('.refresh-icon');
+            icon.classList.add('refresh-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('refresh-spin');
+                // 模拟数据更新
+                const newBalance = (221 + Math.random() * 10).toFixed(2);
+                document.getElementById('pointsBalance').textContent = parseFloat(newBalance).toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                showToast('积分余额已刷新');
+            }, 1000);
+        }
+
+        function refreshBalance(btn) {
+            const icon = btn.querySelector('.refresh-icon');
+            icon.classList.add('refresh-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('refresh-spin');
+                const newBalance = (1 + Math.random() * 5).toFixed(2);
+                document.getElementById('balanceAmount').textContent = parseFloat(newBalance).toLocaleString('zh-CN', {minimumFractionDigits: 2});
+                showToast('账户余额已刷新');
+            }, 1000);
         }
 
         // ==================== Toast通知 ====================
         function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="text-gray-700">${message}</span>
+            `;
             
+            container.appendChild(toast);
+            
+            // 触发动画
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // 自动移除
             setTimeout(() => {
                 toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
             }, 3000);
         }
 
-        // 初始化验证码
-        refreshCode();
+        // ==================== Tooltip ====================
+        function showTooltip(event) {
+            const tooltip = document.getElementById('tooltip');
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = (rect.bottom + 8) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        // ==================== 辅助函数 ====================
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getTypeLabel(type) {
+            const map = {
+                'income': '收入',
+                'expense': '支出',
+                'recharge': '充值',
+                'consume': '消费',
+                'exchange': '兑换',
+                'refund': '退款'
+            };
+            return map[type] || type;
+        }
+
+        function getBalanceTypeLabel(type) {
+            const map = {
+                'recharge': '充值',
+                'withdraw': '提现',
+                'consume': '消费',
+                'refund': '退款',
+                'transfer': '转账'
+            };
+            return map[type] || type;
+        }
+
+        function getOperatorTag(name, type) {
+            if (type === 'self') {
+                return '<a href="#" class="text-blue-600 hover:underline text-sm" onclick="event.preventDefault()">自主充值</a>';
+            } else if (type === 'platform' || type === 'admin') {
+                return '<span class="operator-tag operator-platform">平台充值</span>';
+            } else {
+                return '<span class="operator-tag operator-system">' + name + '</span>';
+            }
+        }
+
+        // 点击遮罩关闭弹窗
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
