@@ -39,6 +39,45 @@
             background-color: var(--primary);
         }
         
+        /* 子菜单样式 */
+        .sidebar-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .sidebar-submenu.open {
+            max-height: 200px;
+        }
+        
+        .sidebar-submenu-item {
+            padding: 8px 16px 8px 52px;
+            color: #9ca3af;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            margin: 2px 8px;
+        }
+        
+        .sidebar-submenu-item:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: #e5e7eb;
+        }
+        
+        .sidebar-submenu-item.active {
+            color: #60a5fa;
+            background-color: rgba(96, 165, 250, 0.1);
+        }
+        
+        .sidebar-arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-arrow.rotate {
+            transform: rotate(180deg);
+        }
+        
         /* 卡片样式 */
         .card {
             background: white;
@@ -474,6 +513,27 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span>授信单明细</span>
+                    </div>
+                </div>
+                
+                <!-- 积分上账管理分组 -->
+                <div class="mb-2 mt-6 px-4 text-xs text-gray-500 uppercase tracking-wider">积分上账管理</div>
+                <div class="space-y-1">
+                    <div class="sidebar-item flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 cursor-pointer" onclick="toggleSubmenu('credit-posting-submenu', this)">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>积分上账管理</span>
+                        </div>
+                        <svg class="w-4 h-4 sidebar-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div id="credit-posting-submenu" class="sidebar-submenu">
+                        <div class="sidebar-submenu-item" onclick="showToast('积分上账审核功能开发中')">积分上账审核</div>
+                        <div class="sidebar-submenu-item" onclick="showToast('积分上账列表功能开发中')">积分上账列表</div>
+                        <div class="sidebar-submenu-item" onclick="showToast('积分上账结果查询功能开发中')">积分上账结果查询</div>
                     </div>
                 </div>
             </nav>
@@ -1804,6 +1864,20 @@
             renderPointsTable();
             renderBalanceTable();
         });
+
+        // ==================== 子菜单切换 ====================
+        function toggleSubmenu(submenuId, triggerElement) {
+            const submenu = document.getElementById(submenuId);
+            const arrow = triggerElement.querySelector('.sidebar-arrow');
+            
+            if (submenu.classList.contains('open')) {
+                submenu.classList.remove('open');
+                arrow.classList.remove('rotate');
+            } else {
+                submenu.classList.add('open');
+                arrow.classList.add('rotate');
+            }
+        }
 
         // ==================== 路由控制 ====================
         function navTo(page) {
