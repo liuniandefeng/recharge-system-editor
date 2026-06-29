@@ -1676,40 +1676,36 @@
                 <div class="text-sm text-gray-500 mb-4">请选择要充值的门店</div>
                 <div class="space-y-3" id="storeList">
                     <!-- 门店列表 -->
-                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="1">
-                        <input type="radio" name="selectedStore" value="广东张三有限公司" class="radio-custom" checked>
+                    <div class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all border-gray-200 hover:border-blue-300 store-item" data-store-id="1" data-store-name="广东张三有限公司" onclick="handleStoreClick(this)">
                         <div class="flex-1">
                             <div class="font-medium text-gray-900">广东张三有限公司</div>
                             <div class="text-sm text-gray-500 mt-1">当前门店</div>
                         </div>
-                    </label>
-                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="2">
-                        <input type="radio" name="selectedStore" value="深圳李四汽车服务有限公司" class="radio-custom">
+                        <span class="text-xs text-blue-500 bg-blue-50 px-2 py-0.5 rounded">当前</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all border-gray-200 hover:border-blue-300 store-item" data-store-id="2" data-store-name="深圳李四汽车服务有限公司" onclick="handleStoreClick(this)">
                         <div class="flex-1">
                             <div class="font-medium text-gray-900">深圳李四汽车服务有限公司</div>
                             <div class="text-sm text-gray-500 mt-1">可充金额：15,000.00</div>
                         </div>
-                    </label>
-                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="3">
-                        <input type="radio" name="selectedStore" value="广州王五汽车销售有限公司" class="radio-custom">
+                    </div>
+                    <div class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all border-gray-200 hover:border-blue-300 store-item" data-store-id="3" data-store-name="广州王五汽车销售有限公司" onclick="handleStoreClick(this)">
                         <div class="flex-1">
                             <div class="font-medium text-gray-900">广州王五汽车销售有限公司</div>
                             <div class="text-sm text-gray-500 mt-1">可充金额：12,000.00</div>
                         </div>
-                    </label>
-                    <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 border-gray-200 hover:border-gray-300 store-item" data-store-id="4">
-                        <input type="radio" name="selectedStore" value="东莞赵六汽车维修中心" class="radio-custom">
+                    </div>
+                    <div class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all border-gray-200 hover:border-blue-300 store-item" data-store-id="4" data-store-name="东莞赵六汽车维修中心" onclick="handleStoreClick(this)">
                         <div class="flex-1">
                             <div class="font-medium text-gray-900">东莞赵六汽车维修中心</div>
                             <div class="text-sm text-gray-500 mt-1">可充金额：8,000.00</div>
                         </div>
-                    </label>
+                    </div>
                 </div>
                 
                 <!-- 按钮 -->
                 <div class="flex gap-3 mt-6">
-                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('storeSelectorModal')">取消</button>
-                    <button class="flex-1 btn-primary px-4 py-2.5 rounded-lg font-medium" onclick="switchStore()">确认切换</button>
+                    <button class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium" onclick="closeModal('storeSelectorModal')">关闭</button>
                 </div>
             </div>
         </div>
@@ -1962,46 +1958,17 @@
 
         // 打开门店选择器
         function openStoreSelector() {
-            // 设置当前选中的门店
-            document.querySelectorAll('input[name="selectedStore"]').forEach(radio => {
-                radio.checked = (radio.value === currentStore);
-            });
             document.getElementById('storeSelectorModal').classList.add('active');
         }
 
-        // 切换门店
-        function switchStore() {
-            const selected = document.querySelector('input[name="selectedStore"]:checked');
-            if (!selected) {
-                showToast('请选择门店');
-                return;
-            }
-            
-            const newStore = selected.value;
-            if (newStore === currentStore) {
+        // 门店点击处理
+        function handleStoreClick(el) {
+            const storeName = el.dataset.storeName;
+            if (storeName === currentStore) {
                 closeModal('storeSelectorModal');
                 return;
             }
-            
-            // 更新当前门店
-            currentStore = newStore;
-            const data = storeData[newStore];
-            
-            // 更新充值弹窗显示
-            document.getElementById('currentStoreName').textContent = newStore;
-            document.getElementById('pointsMaxAmount').textContent = data.pointsMax.toLocaleString('zh-CN', {minimumFractionDigits: 2});
-            document.getElementById('batchMaxAmount').textContent = data.balanceMax.toLocaleString('zh-CN', {minimumFractionDigits: 2});
-            document.getElementById('pointsAccountBalance').textContent = data.pointsBalance.toLocaleString('zh-CN', {minimumFractionDigits: 2});
-            document.getElementById('batchAccountBalance').textContent = data.balanceBalance.toLocaleString('zh-CN', {minimumFractionDigits: 2});
-            
-            // 更新全局变量
-            pointsMaxRechargeValue = data.pointsMax;
-            balanceMaxRechargeValue = data.balanceMax;
-            pointsBalanceValue = data.pointsBalance;
-            balanceAmountValue = data.balanceBalance;
-            
-            closeModal('storeSelectorModal');
-            showToast('已切换到：' + newStore);
+            showToast('如需为其他门店充值，请切换至该门店的"好伙伴"账号后进行操作。');
         }
 
         function updateAccountInfo() {
